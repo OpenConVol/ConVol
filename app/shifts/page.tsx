@@ -19,7 +19,6 @@ export default async function ShiftsPage() {
     <main className="min-h-screen bg-gray-950 text-white">
       <div className="max-w-4xl mx-auto px-6 py-16">
 
-        {/* Header */}
         <div className="mb-10">
           <a href="/" className="text-indigo-400 text-sm mb-4 block">
             ← Back
@@ -28,7 +27,6 @@ export default async function ShiftsPage() {
           <p className="text-gray-400">Browse and sign up for volunteer shifts</p>
         </div>
 
-        {/* Shifts list */}
         {!shifts || shifts.length === 0 ? (
           <div className="bg-gray-900 rounded-xl p-12 text-center">
             <div className="text-gray-500 text-lg">No shifts yet</div>
@@ -49,6 +47,9 @@ export default async function ShiftsPage() {
                       {shift.locations?.name}
                     </div>
                     <div className="text-gray-400 text-sm mt-1">
+                      {shift.departments?.name}
+                    </div>
+                    <div className="text-gray-500 text-sm mt-2">
                       {new Date(shift.start_time).toLocaleString()} —{' '}
                       {new Date(shift.end_time).toLocaleTimeString()}
                     </div>
@@ -57,10 +58,12 @@ export default async function ShiftsPage() {
                     <div className="text-sm text-gray-400">
                       {shift.volunteers_needed} needed
                     </div>
-                    <button className="mt-3 bg-indigo-600 hover:bg-indigo-500 
-                      text-white text-sm px-4 py-2 rounded-lg transition-colors">
-                      Sign up
-                    </button>
+                    <a href={`/shifts/${shift.id}`}
+                      className="mt-3 bg-indigo-600 hover:bg-indigo-500 
+                      text-white text-sm px-4 py-2 rounded-lg transition-colors 
+                      inline-block">
+                      View & Sign up
+                    </a>
                   </div>
                 </div>
               </div>
