@@ -1,8 +1,22 @@
-export default function Home() {
+import { supabase } from '@/src/lib/supabase'
+
+export default async function Home() {
+  const { count: shiftCount } = await supabase
+    .from('shifts')
+    .select('*', { count: 'exact', head: true })
+
+  const { count: volunteerCount } = await supabase
+    .from('volunteers')
+    .select('*', { count: 'exact', head: true })
+
+  const { count: checkinCount } = await supabase
+    .from('checkins')
+    .select('*', { count: 'exact', head: true })
+
   return (
     <main className="min-h-screen bg-gray-950 text-white">
       <div className="max-w-4xl mx-auto px-6 py-16">
-        
+
         {/* Header */}
         <div className="mb-16">
           <h1 className="text-5xl font-bold text-white mb-4">ConVol</h1>
@@ -11,18 +25,24 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Quick stats */}
+        {/* Live stats */}
         <div className="grid grid-cols-3 gap-6 mb-16">
           <div className="bg-gray-900 rounded-xl p-6">
-            <div className="text-3xl font-bold text-white mb-1">0</div>
+            <div className="text-3xl font-bold text-white mb-1">
+              {shiftCount ?? 0}
+            </div>
             <div className="text-gray-400 text-sm">Shifts</div>
           </div>
           <div className="bg-gray-900 rounded-xl p-6">
-            <div className="text-3xl font-bold text-white mb-1">0</div>
+            <div className="text-3xl font-bold text-white mb-1">
+              {volunteerCount ?? 0}
+            </div>
             <div className="text-gray-400 text-sm">Volunteers</div>
           </div>
           <div className="bg-gray-900 rounded-xl p-6">
-            <div className="text-3xl font-bold text-white mb-1">0</div>
+            <div className="text-3xl font-bold text-white mb-1">
+              {checkinCount ?? 0}
+            </div>
             <div className="text-gray-400 text-sm">Check-ins</div>
           </div>
         </div>
