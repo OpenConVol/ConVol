@@ -1,5 +1,7 @@
 import { supabase } from '@/src/lib/supabase'
 import SignUpForm from './SignUpForm'
+import ShiftQRCode from '@/app/components/ShiftQRCode'
+
 export default async function ShiftPage({ 
   params 
 }: { 
@@ -51,8 +53,9 @@ export default async function ShiftPage({
             {shift.departments?.name}
           </div>
           <div className="text-gray-400 text-sm mt-4">
-            {new Date(shift.start_time).toLocaleString()} —{' '}
-            {new Date(shift.end_time).toLocaleTimeString()}
+            {/* TODO: pull timezone from convention settings */}
+            {new Date(shift.start_time).toLocaleString('en-US', { timeZone: 'America/New_York' })} —{' '}
+            {new Date(shift.end_time).toLocaleTimeString('en-US', { timeZone: 'America/New_York' })}
           </div>
           {shift.description && (
             <div className="text-gray-300 mt-4 text-sm">
@@ -79,6 +82,18 @@ export default async function ShiftPage({
         {spotsLeft > 0 && (
           <SignUpForm shiftId={shift.id} />
         )}
+
+        {/* QR Code */}
+        <div className="mt-8">
+          <h2 className="text-lg font-bold mb-2 text-gray-300">Shift QR Code</h2>
+          <p className="text-gray-500 text-sm mb-4">
+            Post this at your shift location for walk-up sign-ups
+          </p>
+          <ShiftQRCode 
+            shiftId={shift.id} 
+            baseUrl="http://192.168.0.22:3000"
+          />
+        </div>
 
         {/* Current signups */}
         {signups && signups.length > 0 && (
