@@ -63,6 +63,13 @@ export default async function Home() {
               Manage shifts, volunteers, and check-ins
             </div>
           </a>
+          <a href="/schedule" className="bg-purple-900 hover:bg-purple-800 
+            rounded-xl p-8 transition-colors">
+            <div className="text-2xl font-bold mb-2">Schedule</div>
+            <div className="text-purple-300 text-sm">
+             Full schedule — shifts and programming together
+            </div>
+          </a>
         </div>
 
       </div>
