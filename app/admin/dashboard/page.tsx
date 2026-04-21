@@ -75,9 +75,9 @@ export default async function DashboardPage() {
     past: 'text-gray-600'
   }
 
-  function ShiftCard({ shift }: { shift: typeof categorized[0] }) {
+  function ShiftCard({ shift }: { shift: typeof categorized[0] & { status: 'critical' | 'warning' | 'good' | 'active' | 'past' } }) {
     return (
-      <div className={`rounded-xl p-5 ${statusColor[shift.status]}`}>
+      <div className={`rounded-xl p-5 ${statusColor[shift.status as keyof typeof statusColor]}`}>
         <div className="flex justify-between items-start">
           <div>
             <div className="font-bold text-white">
@@ -95,7 +95,7 @@ export default async function DashboardPage() {
             </div>
           </div>
           <div className="text-right">
-            <div className={`text-sm font-bold ${statusLabel[shift.status]}`}>
+            <div className={`text-sm font-bold ${statusLabel[shift.status as keyof typeof statusLabel]}`}>
               {shift.signed}/{shift.volunteers_needed} signed up
             </div>
             {shift.status === 'active' || shift.status === 'critical' ? (
