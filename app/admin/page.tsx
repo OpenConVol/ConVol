@@ -60,16 +60,23 @@ export default async function AdminPage() {
           </div>
         </div>
 {/* Quick links */}
-<div className="grid grid-cols-2 gap-4 mb-12">
+<div className="grid grid-cols-3 gap-4 mb-12">
   <a href="/admin/checkin"
     className="bg-indigo-600 hover:bg-indigo-500 rounded-xl p-6 transition-colors">
     <div className="font-bold text-lg mb-1">Check-in</div>
     <div className="text-indigo-200 text-sm">Mark volunteers as arrived</div>
   </a>
+  <a href="/admin/dashboard"
+    className="bg-gray-900 hover:bg-gray-800 rounded-xl p-6 transition-colors">
+    <div className="font-bold text-lg mb-1">Dashboard</div>
+    <div className="text-gray-400 text-sm">Real-time shift fill rates</div>
+  </a>
+  <a href="/admin/raffle"
+    className="bg-gray-900 hover:bg-gray-800 rounded-xl p-6 transition-colors">
+    <div className="font-bold text-lg mb-1">Raffle Tickets</div>
+    <div className="text-gray-400 text-sm">Track and award volunteer tickets</div>
+  </a>
 </div>
-
-
-
 
         {/* Shifts table */}
         <div className="mb-12">
