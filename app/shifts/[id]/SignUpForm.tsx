@@ -17,14 +17,15 @@ export default function SignUpForm({ shiftId }: { shiftId: string }) {
     setLoading(true)
     setError('')
 
-    // Check if volunteer exists
     let volunteerId: string
 
-    const { data: existing } = await supabase
+    const { data: existing, error: existingError } = await supabase
       .from('volunteers')
       .select('id')
       .eq('email', email)
       .single()
+
+    console.log('existing:', existing, 'existingError:', existingError)
 
     if (existing) {
       volunteerId = existing.id
@@ -35,6 +36,8 @@ export default function SignUpForm({ shiftId }: { shiftId: string }) {
         .select('id')
         .single()
 
+      console.log('newVolunteer:', newVolunteer, 'createError:', createError)
+
       if (createError || !newVolunteer) {
         setError('Something went wrong. Please try again.')
         setLoading(false)
@@ -43,10 +46,11 @@ export default function SignUpForm({ shiftId }: { shiftId: string }) {
       volunteerId = newVolunteer.id
     }
 
-    // Sign up for shift
     const { error: signupError } = await supabase
       .from('signups')
       .insert({ shift_id: shiftId, volunteer_id: volunteerId })
+
+    console.log('signupError:', signupError)
 
     if (signupError) {
       if (signupError.code === '23505') {
@@ -65,14 +69,10 @@ export default function SignUpForm({ shiftId }: { shiftId: string }) {
 
   if (success) {
     return (
-      <div className="bg-green-900 border border-green-700 rounded-xl p-8 
-        text-center">
-        <div className="text-2xl font-bold text-green-300 mb-2">
-          You're signed up!
-        </div>
-        <div className="text-green-400 text-sm">
-          See you at the shift. Thank you for volunteering!
-        </div>
+      <div className="bg-green-900 border border-green-700 rounded-xl p-8 text-center">
+        <div className="text-2xl font-bold text-green-300 mb-2">You are signed up!</div>
+        <div className="text-green-400 text-sm mb-6">See you at the shift. Thank you for volunteering!</div>
+        <a href={`/api/ical?email=${encodeURIComponent(email)}`} className="inline-block bg-white text-green-900 font-medium px-6 py-3 rounded-lg text-sm">Download calendar (.ics)</a>
       </div>
     )
   }
@@ -88,9 +88,7 @@ export default function SignUpForm({ shiftId }: { shiftId: string }) {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg 
-              px-4 py-3 text-white placeholder-gray-500 focus:outline-none 
-              focus:border-indigo-500"
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
             placeholder="Your name"
           />
         </div>
@@ -101,9 +99,7 @@ export default function SignUpForm({ shiftId }: { shiftId: string }) {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg 
-              px-4 py-3 text-white placeholder-gray-500 focus:outline-none 
-              focus:border-indigo-500"
+            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
             placeholder="your@email.com"
           />
         </div>
@@ -113,8 +109,7 @@ export default function SignUpForm({ shiftId }: { shiftId: string }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700
-            text-white font-medium py-3 rounded-lg transition-colors"
+          className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-medium py-3 rounded-lg transition-colors"
         >
           {loading ? 'Signing up...' : 'Sign up'}
         </button>
