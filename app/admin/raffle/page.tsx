@@ -1,6 +1,6 @@
 import { supabase } from '@/src/lib/supabase'
 import RafflePanel from './RafflePanel'
-
+export const dynamic = 'force-dynamic'
 export default async function RafflePage() {
   const { data: volunteers } = await supabase
     .from('volunteers')
