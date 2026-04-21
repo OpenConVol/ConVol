@@ -1,6 +1,6 @@
 import { supabase } from '@/src/lib/supabase'
 import CheckinPanel from './CheckinPanel'
-
+export const dynamic = 'force-dynamic'
 export default async function CheckinPage() {
   const { data: shifts } = await supabase
     .from('shifts')

@@ -1,5 +1,5 @@
 import { supabase } from '@/src/lib/supabase'
-
+export const dynamic = 'force-dynamic'
 export default async function SchedulePage() {
   const { data: shifts } = await supabase
     .from('shifts')
