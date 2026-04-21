@@ -7,6 +7,7 @@ type Shift = {
   start_time: string
   end_time: string
   volunteers_needed: number
+  signup_count: number
   shift_types: { name: string } | null
   locations: { name: string } | null
   departments: { id: string; name: string } | null
@@ -109,7 +110,7 @@ export default function ShiftsList({ shifts }: { shifts: Shift[] }) {
                 </div>
                 <div className="text-right">
                   <div className="text-sm text-gray-400 mb-3">
-                    {shift.volunteers_needed} needed
+                    {shift.signup_count ?? 0}/{shift.volunteers_needed} filled
                   </div>
                   <a href={`/shifts/${shift.id}`}
                     className="bg-indigo-600 hover:bg-indigo-500 

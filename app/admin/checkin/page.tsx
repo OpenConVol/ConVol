@@ -17,11 +17,8 @@ export default async function CheckinPage() {
       <div className="max-w-4xl mx-auto px-6 py-16">
 
         <div className="mb-10">
-          <a href="/admin" className="text-indigo-400 text-sm mb-4 block">
-            ← Back to admin
-          </a>
-          <h1 className="text-4xl font-bold text-white mb-2">Check-in</h1>
-          <p className="text-gray-400">Mark volunteers as checked in for their shifts</p>
+          <a href="/" className="text-indigo-400 text-sm mb-1 block">← Home</a>
+          <a href="/admin" className="text-indigo-400 text-sm mb-4 block">← Admin</a>
         </div>
 
         <CheckinPanel shifts={shifts ?? []} />
