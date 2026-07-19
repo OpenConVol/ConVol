@@ -1,23 +1,23 @@
-import { supabase } from '@/src/lib/supabase'
+import { queryMany } from '@/src/lib/db'
 export const dynamic = 'force-dynamic'
 export default async function AdminPage() {
-  const { data: shifts } = await supabase
-    .from('shifts')
-    .select(`*, shift_types(name), locations(name), departments(name)`)
-    .order('start_time')
+  const shifts = await queryMany(`
+    SELECT s.*,
+      jsonb_build_object('name', st.name) AS shift_types,
+      jsonb_build_object('name', l.name) AS locations,
+      jsonb_build_object('name', d.name) AS departments
+    FROM shifts s
+    LEFT JOIN shift_types st ON st.id = s.shift_type_id
+    LEFT JOIN locations l ON l.id = s.location_id
+    LEFT JOIN departments d ON d.id = s.department_id
+    ORDER BY s.start_time
+  `)
 
-  const { data: volunteers } = await supabase
-    .from('volunteers')
-    .select('*')
-    .order('created_at', { ascending: false })
+  const volunteers = await queryMany('SELECT * FROM volunteers ORDER BY created_at DESC')
 
-  const { data: checkins } = await supabase
-    .from('checkins')
-    .select('*')
+  const checkins = await queryMany('SELECT * FROM checkins')
 
-  const { data: signups } = await supabase
-    .from('signups')
-    .select('*')
+  const signups = await queryMany('SELECT * FROM signups')
 
   return (
     <main className="min-h-screen bg-gray-950 text-white">

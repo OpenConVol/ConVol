@@ -1,25 +1,24 @@
-import { supabase } from '@/src/lib/supabase'
+import { queryMany } from '@/src/lib/db'
 import RaffleLookup from './RaffleLookup'
 
 export default async function RafflePublicPage() {
-  const { data: volunteers } = await supabase
-    .from('volunteers')
-    .select('id, name')
-    .order('name')
+  const volunteers = await queryMany<{ id: string; name: string }>(
+    'SELECT id, name FROM volunteers ORDER BY name'
+  )
 
-  const { data: tickets } = await supabase
-    .from('raffle_tickets')
-    .select('volunteer_id')
+  const tickets = await queryMany<{ volunteer_id: string }>(
+    'SELECT volunteer_id FROM raffle_tickets'
+  )
 
   const ticketCounts: Record<string, number> = {}
-  tickets?.forEach(t => {
+  tickets.forEach(t => {
     ticketCounts[t.volunteer_id] = (ticketCounts[t.volunteer_id] ?? 0) + 1
   })
 
-  const volunteersWithCounts = volunteers?.map(v => ({
+  const volunteersWithCounts = volunteers.map(v => ({
     ...v,
     ticketCount: ticketCounts[v.id] ?? 0
-  })) ?? []
+  }))
 
   return (
     <main className="min-h-screen bg-gray-950 text-white">

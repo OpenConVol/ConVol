@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/src/lib/supabase'
 
 type Shift = {
   id: string
@@ -50,48 +49,28 @@ export default function MyShiftsLookup() {
     setError('')
     setSearched(false)
 
-    const { data: volunteer } = await supabase
-      .from('volunteers')
-      .select('id, name')
-      .eq('email', email)
-      .single()
+    const res = await fetch(`/api/my-shifts?email=${encodeURIComponent(email)}`)
 
-    if (!volunteer) {
-      setError('No volunteer found with that email.')
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      setError(body.error || 'No volunteer found with that email.')
       setLoading(false)
       return
     }
 
-    setName(volunteer.name)
+    const data = await res.json()
 
-    const { data: signups } = await supabase
-      .from('signups')
-      .select(`shift_id, shifts(id, start_time, end_time, volunteers_needed, shift_types(name), locations(name), departments(name))`)
-      .eq('volunteer_id', volunteer.id)
+    setName(data.volunteer.name)
 
-    const { data: checkins } = await supabase
-      .from('checkins')
-      .select('shift_id')
-      .eq('volunteer_id', volunteer.id)
-
-    const checkedInShifts = new Set(checkins?.map(c => c.shift_id))
-
-    const shiftList = (signups ?? [])
-      .map((s: any) => ({ ...s.shifts, checked_in: checkedInShifts.has(s.shifts?.id) }))
-      .filter(Boolean)
+    const shiftList = (data.shifts ?? [])
       .sort((a: any, b: any) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
-
-    const { count } = await supabase
-      .from('raffle_tickets')
-      .select('*', { count: 'exact', head: true })
-      .eq('volunteer_id', volunteer.id)
 
     // Fetch their personal Sched schedule
     const schedRes = await fetch(`/api/sched/user?email=${encodeURIComponent(email)}`)
     const schedData = await schedRes.json()
 
     setShifts(shiftList)
-    setTickets(count ?? 0)
+    setTickets(data.ticketCount ?? 0)
     setMySched(schedData.sessions ?? [])
     setSearched(true)
     setLoading(false)

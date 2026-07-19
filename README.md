@@ -25,13 +25,12 @@ ConVol is the tool that should have existed years ago.
   programming schedule
 - Raffle/perk ticket tracking per shift
 - iCal export for personal calendars
-- One-click Vercel deploy for any convention
 
 ## Stack
 
 - **Frontend:** Next.js
-- **Backend/DB:** Supabase
-- **Deployment:** Vercel
+- **Backend/DB:** Postgres (bundled via Docker Compose)
+- **Deployment:** Docker Compose (any Linux host)
 
 ## Status
 
@@ -39,15 +38,19 @@ Early development. First production deployment coming 2026.
 
 ## Getting Started
 
-Set up requires a Postgres database and a `DATABASE_URL` environment variable pointing at it.
-
 ```bash
-npm install
-npm run migrate        # apply schema migrations
-npm run dev            # start the dev server
+cp .env.example .env
+docker compose up
 ```
 
-See [`migrations/README.md`](migrations/README.md) for details on the migration system, and [`docs/architecture/decisions.md`](docs/architecture/decisions.md) for the current architectural direction (bundled Postgres via Docker Compose is coming; managed Postgres or Supabase also work).
+This starts Postgres, runs migrations, and boots the app at http://localhost:3000. First-time boot builds the app image and takes a few minutes.
+
+See [`migrations/README.md`](migrations/README.md) for details on the migration system, and [`docs/architecture/decisions.md`](docs/architecture/decisions.md) for the current architectural direction.
+
+### Development
+
+- `docker compose down` — stop the stack.
+- `docker compose down -v` — stop the stack and nuke the database.
 
 ## Contributing
 

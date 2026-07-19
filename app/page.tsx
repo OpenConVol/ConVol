@@ -1,17 +1,13 @@
-import { supabase } from '@/src/lib/supabase'
+import { queryOne } from '@/src/lib/db'
 export const dynamic = 'force-dynamic'
 export default async function Home() {
-  const { count: shiftCount } = await supabase
-    .from('shifts')
-    .select('*', { count: 'exact', head: true })
+  const shiftRow = await queryOne<{ count: number }>('SELECT COUNT(*)::int AS count FROM shifts')
+  const volunteerRow = await queryOne<{ count: number }>('SELECT COUNT(*)::int AS count FROM volunteers')
+  const checkinRow = await queryOne<{ count: number }>('SELECT COUNT(*)::int AS count FROM checkins')
 
-  const { count: volunteerCount } = await supabase
-    .from('volunteers')
-    .select('*', { count: 'exact', head: true })
-
-  const { count: checkinCount } = await supabase
-    .from('checkins')
-    .select('*', { count: 'exact', head: true })
+  const shiftCount = shiftRow?.count
+  const volunteerCount = volunteerRow?.count
+  const checkinCount = checkinRow?.count
 
   return (
     <main className="min-h-screen bg-gray-950 text-white">

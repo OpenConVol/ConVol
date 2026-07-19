@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/src/lib/supabase'
 
 type Shift = {
   id: string
@@ -33,37 +32,32 @@ export default function CheckinPanel({ shifts }: { shifts: Shift[] }) {
     setSelectedShift(shiftId)
     setLoading(true)
 
-    const { data: signupData } = await supabase
-      .from('signups')
-      .select('*, volunteers(id, name, email)')
-      .eq('shift_id', shiftId)
+    const res = await fetch(`/api/admin/checkin/shift?shiftId=${encodeURIComponent(shiftId)}`)
+    const data = await res.json()
 
-    const { data: checkinData } = await supabase
-      .from('checkins')
-      .select('volunteer_id')
-      .eq('shift_id', shiftId)
-
-    setSignups(signupData ?? [])
-    setCheckins(checkinData ?? [])
+    setSignups(data.signups ?? [])
+    setCheckins(data.checkins ?? [])
     setLoading(false)
   }
 
   async function checkIn(volunteerId: string) {
-    const { error } = await supabase
-      .from('checkins')
-      .insert({ shift_id: selectedShift, volunteer_id: volunteerId })
+    const res = await fetch('/api/admin/checkin', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shiftId: selectedShift, volunteerId }),
+    })
 
-    if (!error) {
+    if (res.ok) {
       setCheckins(prev => [...prev, { volunteer_id: volunteerId }])
     }
   }
 
   async function undoCheckin(volunteerId: string) {
-    await supabase
-      .from('checkins')
-      .delete()
-      .eq('shift_id', selectedShift)
-      .eq('volunteer_id', volunteerId)
+    await fetch('/api/admin/checkin', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shiftId: selectedShift, volunteerId }),
+    })
 
     setCheckins(prev => prev.filter(c => c.volunteer_id !== volunteerId))
   }

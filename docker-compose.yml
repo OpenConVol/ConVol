@@ -1,0 +1,73 @@
+# ConVol development / demo stack.
+#
+# Brings up Postgres + auto-runs the schema migrations + starts the Next.js app.
+# One command from a fresh clone:
+#
+#   cp .env.example .env       # then fill in the Sched keys
+#   docker compose up
+#
+# Open http://localhost:3000.
+#
+# Notes:
+#   - Postgres data persists in the `convol_pg_data` named volume across restarts.
+#     `docker compose down -v` wipes it.
+#   - The `migrate` service runs to completion and exits; `app` waits for it.
+#   - This file is intended for local dev and small self-hosted deployments.
+#     Production hardening (backups, TLS, reverse proxy, resource limits) is
+#     the operator's responsibility. See docs/architecture/decisions.md.
+
+name: convol
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER:     ${POSTGRES_USER:-convol}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-convol}
+      POSTGRES_DB:       ${POSTGRES_DB:-convol}
+    volumes:
+      - convol_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-convol} -d ${POSTGRES_DB:-convol}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    # Uncomment to expose Postgres to the host (for psql access from your machine).
+    # ports:
+    #   - "5432:5432"
+
+  migrate:
+    build:
+      context: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-convol}:${POSTGRES_PASSWORD:-convol}@postgres:5432/${POSTGRES_DB:-convol}
+    # Override the default CMD to run the migrator and exit.
+    command: ["npm", "run", "migrate"]
+    restart: "no"
+
+  app:
+    build:
+      context: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-convol}:${POSTGRES_PASSWORD:-convol}@postgres:5432/${POSTGRES_DB:-convol}
+      # Sched integration
+      SCHED_API_KEY:              ${SCHED_API_KEY:-}
+      SCHED_EVENT_URL:            ${SCHED_EVENT_URL:-}
+      NEXT_PUBLIC_SCHED_EVENT_URL: ${NEXT_PUBLIC_SCHED_EVENT_URL:-}
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    restart: unless-stopped
+
+volumes:
+  convol_pg_data:
+    name: convol_pg_data

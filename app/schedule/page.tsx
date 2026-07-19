@@ -1,15 +1,19 @@
-import { supabase } from '@/src/lib/supabase'
+import { queryMany } from '@/src/lib/db'
 export const dynamic = 'force-dynamic'
 export default async function SchedulePage() {
-  const { data: shifts } = await supabase
-    .from('shifts')
-    .select(`*, shift_types(name), locations(name), departments(name)`)
-    .order('start_time')
+  const shifts = await queryMany(`
+    SELECT s.*,
+      jsonb_build_object('name', st.name) AS shift_types,
+      jsonb_build_object('name', l.name) AS locations,
+      jsonb_build_object('name', d.name) AS departments
+    FROM shifts s
+    LEFT JOIN shift_types st ON st.id = s.shift_type_id
+    LEFT JOIN locations l ON l.id = s.location_id
+    LEFT JOIN departments d ON d.id = s.department_id
+    ORDER BY s.start_time
+  `)
 
-  const { data: schedEvents } = await supabase
-    .from('sched_events')
-    .select('*')
-    .order('start_time')
+  const schedEvents = await queryMany('SELECT * FROM sched_events ORDER BY start_time')
 
   // Combine and sort by start time
   const allEvents = [
