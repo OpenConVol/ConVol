@@ -1,4 +1,4 @@
-import { supabase } from '@/src/lib/supabase'
+import { queryOne, queryMany } from '@/src/lib/db'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -10,31 +10,44 @@ export async function GET(request: NextRequest) {
   }
 
   // Find volunteer
-  const { data: volunteer } = await supabase
-    .from('volunteers')
-    .select('id, name')
-    .eq('email', email)
-    .single()
+  const volunteer = await queryOne<{ id: string; name: string }>(
+    'SELECT id, name FROM volunteers WHERE email = $1',
+    [email]
+  )
 
   if (!volunteer) {
     return NextResponse.json({ error: 'Volunteer not found' }, { status: 404 })
   }
 
   // Get their signups
-  const { data: signups } = await supabase
-    .from('signups')
-    .select(`
-      shift_id,
-      shifts(
-        start_time,
-        end_time,
-        description,
-        shift_types(name),
-        locations(name),
-        departments(name)
-      )
-    `)
-    .eq('volunteer_id', volunteer.id)
+  const signups = await queryMany<{
+    shift_id: string
+    shifts: {
+      start_time: string
+      end_time: string
+      description: string | null
+      shift_types: { name: string } | null
+      locations: { name: string } | null
+      departments: { name: string } | null
+    } | null
+  }>(
+    `SELECT sg.shift_id,
+      jsonb_build_object(
+        'start_time', s.start_time,
+        'end_time', s.end_time,
+        'description', s.description,
+        'shift_types', jsonb_build_object('name', st.name),
+        'locations', jsonb_build_object('name', l.name),
+        'departments', jsonb_build_object('name', d.name)
+      ) AS shifts
+     FROM signups sg
+     LEFT JOIN shifts s ON s.id = sg.shift_id
+     LEFT JOIN shift_types st ON st.id = s.shift_type_id
+     LEFT JOIN locations l ON l.id = s.location_id
+     LEFT JOIN departments d ON d.id = s.department_id
+     WHERE sg.volunteer_id = $1`,
+    [volunteer.id]
+  )
 
   // Build iCal
   const lines: string[] = [
@@ -46,7 +59,7 @@ export async function GET(request: NextRequest) {
     `X-WR-CALNAME:${volunteer.name} - Volunteer Shifts`,
   ]
 
-  signups?.forEach(signup => {
+  signups.forEach(signup => {
     const shift = signup.shifts as any
     if (!shift) return
 

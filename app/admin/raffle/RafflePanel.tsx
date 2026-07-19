@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/src/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 type Volunteer = {
@@ -25,29 +24,22 @@ export default function RafflePanel({ volunteers }: { volunteers: Volunteer[] })
 
   async function awardTicket(volunteerId: string, shiftId: string) {
     setLoading(volunteerId)
-    await supabase
-      .from('raffle_tickets')
-      .insert({ volunteer_id: volunteerId, shift_id: shiftId })
+    await fetch('/api/admin/raffle/award', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ volunteerId, shiftId }),
+    })
     setLoading(null)
     router.refresh()
   }
 
   async function awardAllPending(volunteer: Volunteer) {
     setLoading(volunteer.id)
-    const { data: existing } = await supabase
-      .from('raffle_tickets')
-      .select('shift_id')
-      .eq('volunteer_id', volunteer.id)
-
-    const ticketedShiftIds = new Set(existing?.map(t => t.shift_id))
-
-    for (const checkin of volunteer.checkins) {
-      if (!ticketedShiftIds.has(checkin.shift_id)) {
-        await supabase
-          .from('raffle_tickets')
-          .insert({ volunteer_id: volunteer.id, shift_id: checkin.shift_id })
-      }
-    }
+    await fetch('/api/admin/raffle/award-all-pending', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ volunteerId: volunteer.id }),
+    })
     setLoading(null)
     router.refresh()
   }

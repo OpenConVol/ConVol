@@ -1,4 +1,4 @@
-import { supabase } from '@/src/lib/supabase'
+import { queryOne, queryMany } from '@/src/lib/db'
 import SignUpForm from './SignUpForm'
 import ShiftQRCode from '@/app/components/ShiftQRCode'
 
@@ -8,21 +8,25 @@ export default async function ShiftPage({
   params: Promise<{ id: string }> 
 }) {
   const { id } = await params
-  const { data: shift } = await supabase
-    .from('shifts')
-    .select(`
-      *,
-      shift_types(name, description),
-      locations(name),
-      departments(name)
-    `)
-    .eq('id', id)
-    .single()
+  const shift = await queryOne(`
+    SELECT s.*,
+      jsonb_build_object('name', st.name, 'description', st.description) AS shift_types,
+      jsonb_build_object('name', l.name) AS locations,
+      jsonb_build_object('name', d.name) AS departments
+    FROM shifts s
+    LEFT JOIN shift_types st ON st.id = s.shift_type_id
+    LEFT JOIN locations l ON l.id = s.location_id
+    LEFT JOIN departments d ON d.id = s.department_id
+    WHERE s.id = $1
+  `, [id])
 
-  const { data: signups } = await supabase
-    .from('signups')
-    .select('*, volunteers(name)')
-    .eq('shift_id', id)
+  const signups = await queryMany(`
+    SELECT sg.*,
+      jsonb_build_object('name', v.name) AS volunteers
+    FROM signups sg
+    LEFT JOIN volunteers v ON v.id = sg.volunteer_id
+    WHERE sg.shift_id = $1
+  `, [id])
 
   if (!shift) {
     return (

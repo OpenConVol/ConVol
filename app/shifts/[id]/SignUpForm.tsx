@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { supabase } from '@/src/lib/supabase'
 import { useRouter } from 'next/navigation'
 
 export default function SignUpForm({ shiftId }: { shiftId: string }) {
@@ -17,43 +16,15 @@ export default function SignUpForm({ shiftId }: { shiftId: string }) {
     setLoading(true)
     setError('')
 
-    let volunteerId: string
+    const res = await fetch('/api/signups', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ shiftId, name, email }),
+    })
 
-    const { data: existing, error: existingError } = await supabase
-      .from('volunteers')
-      .select('id')
-      .eq('email', email)
-      .single()
-
-    console.log('existing:', existing, 'existingError:', existingError)
-
-    if (existing) {
-      volunteerId = existing.id
-    } else {
-      const { data: newVolunteer, error: createError } = await supabase
-        .from('volunteers')
-        .insert({ name, email })
-        .select('id')
-        .single()
-
-      console.log('newVolunteer:', newVolunteer, 'createError:', createError)
-
-      if (createError || !newVolunteer) {
-        setError('Something went wrong. Please try again.')
-        setLoading(false)
-        return
-      }
-      volunteerId = newVolunteer.id
-    }
-
-    const { error: signupError } = await supabase
-      .from('signups')
-      .insert({ shift_id: shiftId, volunteer_id: volunteerId })
-
-    console.log('signupError:', signupError)
-
-    if (signupError) {
-      if (signupError.code === '23505') {
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      if (body.error === 'already_signed_up') {
         setError('You are already signed up for this shift.')
       } else {
         setError('Something went wrong. Please try again.')

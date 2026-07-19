@@ -1,0 +1,58 @@
+# What NOT to send into the Docker build context.
+# Keeps the image small and the build fast.
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Dependencies (installed inside the container)
+node_modules
+.pnp
+.pnp.*
+.yarn
+
+# Build output (rebuilt inside the container)
+.next
+out
+build
+dist
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.vscode
+.idea
+.DS_Store
+*.swp
+*.swo
+
+# CI / GitHub
+.github
+
+# Docs and dev-only files not needed at runtime
+docs
+*.md
+!README.md
+
+# Docker build byproducts
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# TypeScript build info
+*.tsbuildinfo
+next-env.d.ts
+
+# Testing
+coverage

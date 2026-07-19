@@ -1,4 +1,4 @@
-import { supabase } from '@/src/lib/supabase'
+import { pool } from '@/src/lib/db'
 import { NextResponse } from 'next/server'
 
 export async function POST() {
@@ -38,12 +38,44 @@ export async function POST() {
     last_synced: new Date().toISOString()
   }))
 
-  const { error } = await supabase
-    .from('sched_events')
-    .upsert(records, { onConflict: 'sched_id' })
-
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+  try {
+    const client = await pool.connect()
+    try {
+      await client.query('BEGIN')
+      for (const r of records) {
+        await client.query(
+          `INSERT INTO sched_events (sched_id, title, description, location, start_time, end_time, event_type, last_synced)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+           ON CONFLICT (sched_id) DO UPDATE SET
+             title = EXCLUDED.title,
+             description = EXCLUDED.description,
+             location = EXCLUDED.location,
+             start_time = EXCLUDED.start_time,
+             end_time = EXCLUDED.end_time,
+             event_type = EXCLUDED.event_type,
+             last_synced = EXCLUDED.last_synced`,
+          [
+            r.sched_id,
+            r.title,
+            r.description,
+            r.location,
+            r.start_time,
+            r.end_time,
+            r.event_type,
+            r.last_synced,
+          ]
+        )
+      }
+      await client.query('COMMIT')
+    } catch (err) {
+      await client.query('ROLLBACK')
+      throw err
+    } finally {
+      client.release()
+    }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 
   return NextResponse.json({ 

@@ -1,33 +1,36 @@
 export const dynamic = 'force-dynamic'
-import { supabase } from '@/src/lib/supabase'
+import { queryMany } from '@/src/lib/db'
 
 export default async function DashboardPage() {
-  const { data: shifts } = await supabase
-    .from('shifts')
-    .select(`*, shift_types(name), locations(name), departments(name)`)
-    .order('start_time')
+  const shifts = await queryMany(`
+    SELECT s.*,
+      jsonb_build_object('name', st.name) AS shift_types,
+      jsonb_build_object('name', l.name) AS locations,
+      jsonb_build_object('name', d.name) AS departments
+    FROM shifts s
+    LEFT JOIN shift_types st ON st.id = s.shift_type_id
+    LEFT JOIN locations l ON l.id = s.location_id
+    LEFT JOIN departments d ON d.id = s.department_id
+    ORDER BY s.start_time
+  `)
 
-  const { data: signups } = await supabase
-    .from('signups')
-    .select('shift_id')
+  const signups = await queryMany<{ shift_id: string }>('SELECT shift_id FROM signups')
 
-  const { data: checkins } = await supabase
-    .from('checkins')
-    .select('shift_id')
+  const checkins = await queryMany<{ shift_id: string }>('SELECT shift_id FROM checkins')
 
   const signupCounts: Record<string, number> = {}
   const checkinCounts: Record<string, number> = {}
 
-  signups?.forEach(s => {
+  signups.forEach(s => {
     signupCounts[s.shift_id] = (signupCounts[s.shift_id] ?? 0) + 1
   })
-  checkins?.forEach(c => {
+  checkins.forEach(c => {
     checkinCounts[c.shift_id] = (checkinCounts[c.shift_id] ?? 0) + 1
   })
 
   const now = new Date()
 
-  const categorized = shifts?.map(shift => {
+  const categorized = shifts.map(shift => {
     const needed = shift.volunteers_needed
     const signed = signupCounts[shift.id] ?? 0
     const checked = checkinCounts[shift.id] ?? 0
@@ -47,7 +50,7 @@ export default async function DashboardPage() {
     else status = 'good'
 
     return { ...shift, signed, checked, status, fillRate, checkinRate, needed }
-  }) ?? []
+  })
 
   const critical = categorized.filter(s => s.status === 'critical')
   const warning = categorized.filter(s => s.status === 'warning')
