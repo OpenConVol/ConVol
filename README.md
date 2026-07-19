@@ -37,6 +37,18 @@ ConVol is the tool that should have existed years ago.
 
 Early development. First production deployment coming 2026.
 
+## Getting Started
+
+Set up requires a Postgres database and a `DATABASE_URL` environment variable pointing at it.
+
+```bash
+npm install
+npm run migrate        # apply schema migrations
+npm run dev            # start the dev server
+```
+
+See [`migrations/README.md`](migrations/README.md) for details on the migration system, and [`docs/architecture/decisions.md`](docs/architecture/decisions.md) for the current architectural direction (bundled Postgres via Docker Compose is coming; managed Postgres or Supabase also work).
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md)
