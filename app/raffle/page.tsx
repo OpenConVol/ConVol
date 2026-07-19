@@ -1,6 +1,8 @@
 import { queryMany } from '@/src/lib/db'
 import RaffleLookup from './RaffleLookup'
 
+export const dynamic = 'force-dynamic'
+
 export default async function RafflePublicPage() {
   const volunteers = await queryMany<{ id: string; name: string }>(
     'SELECT id, name FROM volunteers ORDER BY name'

@@ -2,6 +2,8 @@ import { queryOne, queryMany } from '@/src/lib/db'
 import SignUpForm from './SignUpForm'
 import ShiftQRCode from '@/app/components/ShiftQRCode'
 
+export const dynamic = 'force-dynamic'
+
 export default async function ShiftPage({ 
   params 
 }: { 
