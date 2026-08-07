@@ -126,7 +126,7 @@ export default function MyShiftsLookup() {
               {shifts.map((shift: any) => {
                 const conflicts = getConflicts(shift)
                 return (
-                  <div key={shift.id} className={`rounded-xl p-6 border ${shift.checked_in ? 'bg-green-900 border-green-700' : 'bg-gray-900 border-gray-800'}`}>
+                  <div key={shift.id} className={`rounded-xl p-6 bg-gray-900 border border-gray-800 ${shift.checked_in ? 'border-l-4 border-l-green-500' : ''}`}>
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
                         <div className="font-bold text-[var(--app-text)] text-lg">{shift.shift_types?.name}</div>

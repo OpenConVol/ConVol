@@ -87,10 +87,10 @@ export default async function SchedulePage() {
             <div className="space-y-3">
               {events.map(event => (
                 <div key={event.id}
-                  className={`rounded-xl p-5 border ${
+                  className={`rounded-xl p-5 bg-gray-900 border border-gray-800 border-l-4 ${
                     event.type === 'shift'
-                      ? 'bg-indigo-950 border-indigo-800'
-                      : 'bg-purple-950 border-purple-800'
+                      ? 'border-l-[var(--app-brand-500)]'
+                      : 'border-l-purple-500'
                   }`}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
