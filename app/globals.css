@@ -22,16 +22,17 @@
 /*
  * ConVol theming (docs/architecture/decisions.md).
  *
- * The app is styled with a small vocabulary of Tailwind gray-*/indigo-* color
+ * The app is styled with a small vocabulary of Tailwind gray and indigo color
  * classes. Rather than rewrite every class, we (1) define theme tokens
- * (--app-*) whose DEFAULT values reproduce the original dark look exactly, and
- * (2) remap the Tailwind palette variables those classes compile to onto the
- * tokens. app/layout.tsx injects overrides onto <html> when an operator has
- * saved a theme; otherwise these defaults apply and nothing changes.
+ * (prefixed --app-) whose DEFAULT values reproduce the original dark look
+ * exactly, and (2) remap the Tailwind palette variables those classes compile
+ * to onto the tokens. app/layout.tsx injects overrides onto <html> when an
+ * operator has saved a theme; otherwise these defaults apply and nothing
+ * changes.
  *
- * `text-white` is the one exception (it means both "primary text" and "button
+ * text-white is the one exception (it means both "primary text" and "button
  * ink"), so it was refactored in the markup to text-[var(--app-text)], with
- * brand buttons using text-[var(--app-brand-ink)]. `white`/`bg-white` stay
+ * brand buttons using text-[var(--app-brand-ink)]. white and bg-white stay
  * literal so the QR code and calendar button keep their white ground.
  */
 :root {
