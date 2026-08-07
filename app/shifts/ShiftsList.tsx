@@ -13,13 +13,17 @@ type Shift = {
   departments: { id: string; name: string } | null
 }
 
+// Postgres timestamptz can arrive as a Date or an ISO string over the RSC
+// boundary; normalize to a YYYY-MM-DD key either way.
+const dayKey = (t: string | Date) => new Date(t).toISOString().split('T')[0]
+
 export default function ShiftsList({ shifts }: { shifts: Shift[] }) {
   const [selectedDay, setSelectedDay] = useState<string>('all')
   const [selectedDept, setSelectedDept] = useState<string>('all')
 
   const days = Array.from(new Set(
-    shifts.map(s => s.start_time.split('T')[0])
-  ))
+    shifts.map(s => dayKey(s.start_time))
+  )).sort()
 
   const deptMap: Record<string, string> = {}
   shifts.forEach(s => {
@@ -32,7 +36,7 @@ export default function ShiftsList({ shifts }: { shifts: Shift[] }) {
     .sort((a, b) => a.name.localeCompare(b.name))
 
   const filtered = shifts.filter(shift => {
-    const shiftDay = shift.start_time.split('T')[0]
+    const shiftDay = dayKey(shift.start_time)
     const dayMatch = selectedDay === 'all' || shiftDay === selectedDay
     const deptMatch = selectedDept === 'all' || shift.departments?.id === selectedDept
     return dayMatch && deptMatch
@@ -113,8 +117,8 @@ export default function ShiftsList({ shifts }: { shifts: Shift[] }) {
                     {shift.signup_count ?? 0}/{shift.volunteers_needed} filled
                   </div>
                   <a href={`/shifts/${shift.id}`}
-                    className="bg-indigo-600 hover:bg-indigo-500 
-                    text-[var(--app-text)] text-sm px-4 py-2 rounded-lg transition-colors 
+                    className="bg-indigo-600 hover:bg-indigo-500
+                    text-[var(--app-brand-ink)] text-sm px-4 py-2 rounded-lg transition-colors
                     inline-block">
                     View & Sign up
                   </a>
