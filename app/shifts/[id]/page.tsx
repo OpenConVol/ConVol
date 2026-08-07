@@ -95,10 +95,7 @@ export default async function ShiftPage({
           <p className="text-gray-500 text-sm mb-4">
             Post this at your shift location for walk-up sign-ups
           </p>
-          <ShiftQRCode 
-            shiftId={shift.id} 
-            baseUrl="http://192.168.0.22:3000"
-          />
+          <ShiftQRCode shiftId={shift.id} />
         </div>
 
         {/* Current signups */}
