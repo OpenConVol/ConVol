@@ -1,8 +1,11 @@
-// TODO(#16): protect this route behind staff auth
 import { pool } from '@/src/lib/db'
+import { getSessionStaff } from '@/src/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
+  const staff = await getSessionStaff()
+  if (!staff) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+
   const body = await request.json()
   const { volunteerId } = body as { volunteerId?: string }
 
@@ -29,10 +32,10 @@ export async function POST(request: NextRequest) {
     for (const checkin of checkins.rows) {
       if (!ticketedShiftIds.has(checkin.shift_id)) {
         await client.query(
-          `INSERT INTO raffle_tickets (volunteer_id, shift_id)
-           VALUES ($1, $2)
+          `INSERT INTO raffle_tickets (volunteer_id, shift_id, awarded_by)
+           VALUES ($1, $2, $3)
            ON CONFLICT (shift_id, volunteer_id) DO NOTHING`,
-          [volunteerId, checkin.shift_id]
+          [volunteerId, checkin.shift_id, staff.email]
         )
         awarded++
       }

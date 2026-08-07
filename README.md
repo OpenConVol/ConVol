@@ -36,14 +36,22 @@ ConVol is the tool that should have existed years ago.
 
 Early development. First production deployment coming 2026.
 
+## Access model
+
+- **Volunteers don't log in.** They identify by the email they use in Sched; ConVol looks up their shifts and (where Sched is configured) their schedule from that email.
+- **Staff log in** with an email + password. All `/admin` pages and `/api/admin` routes require a staff session. On a fresh install, visit `/setup` to create the first staff account (set `CONVOL_ROOT_ADMIN_EMAIL` to restrict who may claim it).
+
+See [`docs/architecture/decisions.md`](docs/architecture/decisions.md) for the full rationale.
+
 ## Getting Started
 
 ```bash
 cp .env.example .env
+# set SESSION_SECRET in .env — generate one with: openssl rand -base64 48
 docker compose up
 ```
 
-This starts Postgres, runs migrations, and boots the app at http://localhost:3000. First-time boot builds the app image and takes a few minutes.
+This starts Postgres, runs migrations, and boots the app at http://localhost:3000. First-time boot builds the app image and takes a few minutes. Then open http://localhost:3000/setup to create the first staff account.
 
 See [`migrations/README.md`](migrations/README.md) for details on the migration system, and [`docs/architecture/decisions.md`](docs/architecture/decisions.md) for the current architectural direction.
 

@@ -1,16 +1,19 @@
 import { pool } from '@/src/lib/db'
+import { getSessionStaff } from '@/src/lib/auth'
+import { getSchedConfig } from '@/src/lib/sched'
 import { NextResponse } from 'next/server'
 
 export async function POST() {
-  const apiKey = process.env.SCHED_API_KEY
-  const eventUrl = process.env.SCHED_EVENT_URL
+  const staff = await getSessionStaff()
+  if (!staff) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
 
-  if (!apiKey || !eventUrl) {
+  const sched = getSchedConfig()
+  if (!sched) {
     return NextResponse.json({ error: 'Sched not configured' }, { status: 500 })
   }
 
   // Fetch sessions from Sched API
-  const url = `https://${eventUrl}/api/session/list?api_key=${apiKey}&format=json&status=active`
+  const url = `https://${sched.url}/api/session/list?api_key=${sched.token}&format=json&status=active`
 
   const res = await fetch(url, {
     headers: { 'User-Agent': 'ConVol/1.0' }

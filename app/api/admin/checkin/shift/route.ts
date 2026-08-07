@@ -1,8 +1,11 @@
-// TODO(#16): protect this route behind staff auth
 import { queryMany } from '@/src/lib/db'
+import { getSessionStaff } from '@/src/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
+  const staff = await getSessionStaff()
+  if (!staff) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+
   const { searchParams } = new URL(request.url)
   const shiftId = searchParams.get('shiftId')
 

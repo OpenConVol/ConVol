@@ -1,3 +1,4 @@
+import { getSchedConfig } from '@/src/lib/sched'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
@@ -8,15 +9,13 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ sessions: [] })
   }
 
-  const apiKey = process.env.SCHED_API_KEY
-  const eventUrl = process.env.SCHED_EVENT_URL
-
-  if (!apiKey || !eventUrl) {
+  const sched = getSchedConfig()
+  if (!sched) {
     return NextResponse.json({ sessions: [] })
   }
 
   try {
-    const url = `https://${eventUrl}/api/going/list?api_key=${apiKey}&username=${encodeURIComponent(email)}&format=json`
+    const url = `https://${sched.url}/api/going/list?api_key=${sched.token}&username=${encodeURIComponent(email)}&format=json`
 
     const res = await fetch(url, {
       headers: { 'User-Agent': 'ConVol/1.0' }

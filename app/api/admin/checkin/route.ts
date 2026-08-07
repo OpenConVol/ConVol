@@ -1,8 +1,11 @@
-// TODO(#16): protect this route behind staff auth
 import { pool } from '@/src/lib/db'
+import { getSessionStaff } from '@/src/lib/auth'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
+  const staff = await getSessionStaff()
+  if (!staff) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+
   const body = await request.json()
   const { shiftId, volunteerId } = body as { shiftId?: string; volunteerId?: string }
 
@@ -12,8 +15,8 @@ export async function POST(request: NextRequest) {
 
   try {
     await pool.query(
-      'INSERT INTO checkins (shift_id, volunteer_id) VALUES ($1, $2)',
-      [shiftId, volunteerId]
+      'INSERT INTO checkins (shift_id, volunteer_id, checked_in_by) VALUES ($1, $2, $3)',
+      [shiftId, volunteerId, staff.email]
     )
     return NextResponse.json({ success: true }, { status: 201 })
   } catch (err: any) {
@@ -25,6 +28,9 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const staff = await getSessionStaff()
+  if (!staff) return NextResponse.json({ error: 'unauthorized' }, { status: 401 })
+
   const body = await request.json()
   const { shiftId, volunteerId } = body as { shiftId?: string; volunteerId?: string }
 
