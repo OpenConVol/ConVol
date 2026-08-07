@@ -1,5 +1,5 @@
 import 'server-only'
-import { createHmac, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
+import { createHash, createHmac, randomBytes, scryptSync, timingSafeEqual } from 'node:crypto'
 import { cookies } from 'next/headers'
 import { queryOne } from '@/src/lib/db'
 
@@ -55,6 +55,19 @@ export function verifyPassword(password: string, stored: string): boolean {
   if (expected.length === 0) return false
   const actual = scryptSync(password, salt, expected.length)
   return actual.length === expected.length && timingSafeEqual(actual, expected)
+}
+
+// ---- invite tokens --------------------------------------------------------
+
+/** SHA-256 of an invite token, base64url. Only this is stored, never the token. */
+export function hashInviteToken(token: string): string {
+  return createHash('sha256').update(token).digest('base64url')
+}
+
+/** A fresh invite: the raw token (goes in the link) and its hash (goes in the DB). */
+export function generateInviteToken(): { token: string; tokenHash: string } {
+  const token = randomBytes(32).toString('base64url')
+  return { token, tokenHash: hashInviteToken(token) }
 }
 
 // ---- signed session token -------------------------------------------------
