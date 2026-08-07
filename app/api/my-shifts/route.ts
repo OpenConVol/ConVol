@@ -1,21 +1,54 @@
 import { queryOne, queryMany } from '@/src/lib/db'
+import { fetchSchedGoing } from '@/src/lib/sched'
 import { NextRequest, NextResponse } from 'next/server'
+
+/**
+ * Derives a display name from an email local-part, e.g.
+ * "jane.doe@x.com" -> "Jane Doe". A placeholder until the volunteer edits it.
+ */
+function nameFromEmail(email: string): string {
+  const local = email.split('@')[0] ?? email
+  return (
+    local
+      .split(/[._-]+/)
+      .filter(Boolean)
+      .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ') || email
+  )
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
-  const email = searchParams.get('email')
+  const rawEmail = searchParams.get('email')
 
-  if (!email) {
+  if (!rawEmail) {
     return NextResponse.json({ error: 'Email required' }, { status: 400 })
   }
+  const email = rawEmail.trim().toLowerCase()
 
-  const volunteer = await queryOne<{ id: string; name: string }>(
-    'SELECT id, name FROM volunteers WHERE email = $1',
+  let volunteer = await queryOne<{ id: string; name: string }>(
+    'SELECT id, name FROM volunteers WHERE lower(email) = $1',
     [email]
   )
 
+  // Auto-provision from Sched: if this email isn't a volunteer yet but Sched
+  // recognizes it as a real attendee, create the volunteer record instead of
+  // turning them away (docs/architecture/decisions.md Decision 1). When Sched
+  // is unconfigured, fetchSchedGoing returns null and behavior is unchanged.
   if (!volunteer) {
-    return NextResponse.json({ error: 'No volunteer found with that email.' }, { status: 404 })
+    const going = await fetchSchedGoing(email)
+    if (going === null) {
+      return NextResponse.json({ error: 'No volunteer found with that email.' }, { status: 404 })
+    }
+    volunteer = await queryOne<{ id: string; name: string }>(
+      `INSERT INTO volunteers (name, email) VALUES ($1, $2)
+       ON CONFLICT (email) DO UPDATE SET email = EXCLUDED.email
+       RETURNING id, name`,
+      [nameFromEmail(email), email]
+    )
+    if (!volunteer) {
+      return NextResponse.json({ error: 'Could not look up that email.' }, { status: 500 })
+    }
   }
 
   const signups = await queryMany<{

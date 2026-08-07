@@ -3,15 +3,17 @@
 # Brings up Postgres + auto-runs the schema migrations + starts the Next.js app.
 # One command from a fresh clone:
 #
-#   cp .env.example .env       # then fill in the Sched keys
+#   cp .env.example .env       # then set SESSION_SECRET (and Sched keys if used)
 #   docker compose up
 #
-# Open http://localhost:3000.
+# Open http://localhost:3000, then visit /setup to create the first staff account.
 #
 # Notes:
 #   - Postgres data persists in the `convol_pg_data` named volume across restarts.
 #     `docker compose down -v` wipes it.
 #   - The `migrate` service runs to completion and exits; `app` waits for it.
+#     It uses the same psql-based runner (scripts/migrate.sh) that production
+#     uses, so a fresh clone reproduces production's migration behavior exactly.
 #   - This file is intended for local dev and small self-hosted deployments.
 #     Production hardening (backups, TLS, reverse proxy, resource limits) is
 #     the operator's responsibility. See docs/architecture/decisions.md.
@@ -38,16 +40,20 @@ services:
     # ports:
     #   - "5432:5432"
 
+  # One-shot schema migrations. Uses psql from the postgres image (no app build
+  # needed) and the canonical runner in scripts/migrate.sh.
   migrate:
-    build:
-      context: .
+    image: postgres:16-alpine
     depends_on:
       postgres:
         condition: service_healthy
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-convol}:${POSTGRES_PASSWORD:-convol}@postgres:5432/${POSTGRES_DB:-convol}
-    # Override the default CMD to run the migrator and exit.
-    command: ["npm", "run", "migrate"]
+    volumes:
+      - ./migrations:/migrations:ro
+      - ./scripts/migrate.sh:/migrate.sh:ro
+    entrypoint: ["/bin/sh", "-c"]
+    command: ["sh /migrate.sh"]
     restart: "no"
 
   app:
@@ -60,9 +66,13 @@ services:
         condition: service_completed_successfully
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER:-convol}:${POSTGRES_PASSWORD:-convol}@postgres:5432/${POSTGRES_DB:-convol}
-      # Sched integration
-      SCHED_API_KEY:              ${SCHED_API_KEY:-}
-      SCHED_EVENT_URL:            ${SCHED_EVENT_URL:-}
+      # Staff session signing secret. Required — compose fails fast if unset.
+      SESSION_SECRET: ${SESSION_SECRET:?set SESSION_SECRET in .env (see .env.example)}
+      # Optional: restrict who can claim the first staff account at /setup.
+      CONVOL_ROOT_ADMIN_EMAIL: ${CONVOL_ROOT_ADMIN_EMAIL:-}
+      # Sched integration (optional).
+      SCHED_URL:                   ${SCHED_URL:-}
+      SCHED_TOKEN:                 ${SCHED_TOKEN:-}
       NEXT_PUBLIC_SCHED_EVENT_URL: ${NEXT_PUBLIC_SCHED_EVENT_URL:-}
     ports:
       - "${APP_PORT:-3000}:3000"

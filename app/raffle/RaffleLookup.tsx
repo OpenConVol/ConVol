@@ -2,73 +2,65 @@
 
 import { useState } from 'react'
 
-type Volunteer = {
-  id: string
-  name: string
-  ticketCount: number
-}
+type Result = { name: string; ticketCount: number }
 
-export default function RaffleLookup({ volunteers }: { volunteers: Volunteer[] }) {
-  const [search, setSearch] = useState('')
-  const [selected, setSelected] = useState<Volunteer | null>(null)
+export default function RaffleLookup() {
+  const [email, setEmail] = useState('')
+  const [result, setResult] = useState<Result | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
-  const filtered = search.length > 1
-    ? volunteers.filter(v =>
-        v.name.toLowerCase().includes(search.toLowerCase())
-      )
-    : []
+  async function lookup(e: React.FormEvent) {
+    e.preventDefault()
+    setLoading(true)
+    setError('')
+    setResult(null)
+
+    const res = await fetch(`/api/raffle/lookup?email=${encodeURIComponent(email)}`)
+
+    if (!res.ok) {
+      const body = await res.json().catch(() => ({}))
+      setError(body.error || 'No volunteer found with that email.')
+      setLoading(false)
+      return
+    }
+
+    setResult(await res.json())
+    setLoading(false)
+  }
 
   return (
     <div>
-      <input
-        type="text"
-        value={search}
-        onChange={e => { setSearch(e.target.value); setSelected(null) }}
-        placeholder="Type your name..."
-        className="w-full bg-gray-900 border border-gray-700 rounded-xl px-5 py-4 text-white text-lg placeholder-gray-500 focus:outline-none focus:border-indigo-500 mb-4"
-        autoFocus
-      />
+      <form onSubmit={lookup} className="flex gap-3 mb-6">
+        <input
+          type="email"
+          value={email}
+          onChange={e => { setEmail(e.target.value); setResult(null) }}
+          required
+          autoFocus
+          placeholder="your@email.com"
+          className="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-5 py-4 text-white text-lg placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-medium px-6 rounded-xl transition-colors"
+        >
+          {loading ? '…' : 'Look up'}
+        </button>
+      </form>
 
-      {/* Search results */}
-      {!selected && filtered.length > 0 && (
-        <div className="bg-gray-900 rounded-xl overflow-hidden mb-6">
-          {filtered.map(v => (
-            <button
-              key={v.id}
-              onClick={() => setSelected(v)}
-              className="w-full text-left px-5 py-4 hover:bg-gray-800 transition-colors border-b border-gray-800 last:border-0"
-            >
-              <span className="text-white">{v.name}</span>
-              <span className="text-gray-500 text-sm ml-2">
-                {v.ticketCount} ticket{v.ticketCount !== 1 ? 's' : ''}
-              </span>
-            </button>
-          ))}
-        </div>
+      {error && (
+        <div className="bg-gray-900 rounded-xl p-8 text-center text-gray-500">{error}</div>
       )}
 
-      {/* Selected volunteer */}
-      {selected && (
+      {result && (
         <div className="bg-gray-900 rounded-xl p-10 text-center">
-          <div className="text-gray-400 text-sm mb-2">{selected.name}</div>
-          <div className="text-8xl font-bold text-indigo-400 mb-2">
-            {selected.ticketCount}
-          </div>
+          <div className="text-gray-400 text-sm mb-2">{result.name}</div>
+          <div className="text-8xl font-bold text-indigo-400 mb-2">{result.ticketCount}</div>
           <div className="text-gray-400 text-lg">
-            raffle ticket{selected.ticketCount !== 1 ? 's' : ''}
+            raffle ticket{result.ticketCount !== 1 ? 's' : ''}
           </div>
-          <button
-            onClick={() => { setSelected(null); setSearch('') }}
-            className="mt-8 text-gray-500 hover:text-white text-sm transition-colors"
-          >
-            Look up someone else
-          </button>
-        </div>
-      )}
-
-      {search.length > 1 && filtered.length === 0 && !selected && (
-        <div className="bg-gray-900 rounded-xl p-8 text-center text-gray-500">
-          No volunteers found matching "{search}"
         </div>
       )}
     </div>

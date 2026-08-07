@@ -7,7 +7,34 @@ The founding [project brief](../BRIEF.md) describes intent as of April 2026;
 this document describes the current architectural direction. When they
 disagree, this document wins.
 
-**Last updated:** 2026-07-15
+**Last updated:** 2026-08-06
+
+---
+
+## Update — 2026-08-06: Staff auth implemented
+
+Items 4–5 of the Implementation Order below shipped, resolving the
+previously-deferred **staff authentication mechanism** in favor of **email +
+password** (scrypt hashing, stateless signed-cookie sessions). Magic link was
+preferred on paper but password has no email-delivery dependency, which matters
+for a single-container self-host.
+
+- A `staff` table (migration `002_staff_auth.sql`) with a `role` column
+  (default `staff`) so finer roles can arrive later without a migration.
+- All `/admin/*` pages and `/api/admin/*` routes now require a staff session
+  (closes issue #16 — previously anyone with the URL had full admin).
+- **First-run bootstrap:** when no staff exist, `/setup` creates the first
+  account. `CONVOL_ROOT_ADMIN_EMAIL` (env) optionally restricts who may claim
+  it. This realizes the "bootstrap root-admin email" idea from Decision 1.
+- `checked_in_by` / `awarded_by` are now populated with the acting staff
+  member's email (still `text`, not yet a FK — see the data-model review).
+
+Also landed alongside: the public `/raffle` page no longer exposes the full
+volunteer roster (it's an email lookup now; the roster lives in the
+auth-protected `/admin/raffle`); Sched env vars reconciled to `SCHED_URL` /
+`SCHED_TOKEN`; volunteer auto-provision from Sched in `/my-shifts`; and the
+repo `docker-compose.yml` migrate service now uses the same psql runner
+(`scripts/migrate.sh`) as production.
 
 ---
 
@@ -271,8 +298,9 @@ decided here:
   in place as `docs/BRIEF.md` or preserve it as-is and let this document
   supersede it. Leaning toward preserving the brief as a historical
   artifact.
-- **Staff authentication mechanism.** Magic link vs. password not yet
-  finalized; both fit Decision 1.
+- ~~**Staff authentication mechanism.** Magic link vs. password not yet
+  finalized; both fit Decision 1.~~ **Resolved 2026-08-06:** email + password
+  (see the update note at the top of this document).
 - **Duplicate ticket number handling.** UI-reject vs. DB-unique — final
   call at implementation time.
 - **Ribbon-at-3-hours and PIN reward.** Acknowledged as a future feature;

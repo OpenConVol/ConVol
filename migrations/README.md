@@ -11,19 +11,27 @@ for the rationale.
 
 ## Running migrations
 
-Migrations are managed by [`node-pg-migrate`](https://github.com/salsita/node-pg-migrate).
-It looks at every `.sql` file in this directory (in filename order), tracks
-which have already run in a `pgmigrations` table on the database, and applies
-any it hasn't seen.
+Migrations are applied by [`scripts/migrate.sh`](../scripts/migrate.sh), a small
+psql-based runner. It applies every `.sql` file in this directory (in filename
+order) exactly once, recording each in a `schema_migrations` table on the
+database. Each file and its ledger row are written in a single transaction, so a
+file that fails halfway is not recorded and is retried on the next run.
 
-Set `DATABASE_URL` to your Postgres connection string, then:
+You do not normally run it by hand: the `migrate` service in
+[`docker-compose.yml`](../docker-compose.yml) runs it automatically before the
+app starts, and production runs the same script. It uses only `psql` from the
+Postgres image, so it has no dependency on the application image or on Node.
+
+To run it manually against an arbitrary database, set `DATABASE_URL` (it looks
+like `postgres://user:pass@host:5432/dbname`) and, from a shell with `psql` and
+this repo mounted at `/migrations` with the script at `/migrate.sh`:
 
 ```bash
-npm run migrate         # apply all pending migrations
-npm run migrate:down    # roll back the most recent migration
+DATABASE_URL=postgres://user:pass@host:5432/dbname sh scripts/migrate.sh
 ```
 
-`DATABASE_URL` looks like `postgres://user:pass@host:5432/dbname`.
+There is no automated "down" — migrations are forward-only. To reverse one, add
+a new numbered migration that undoes it.
 
 ## Adding a new migration
 
