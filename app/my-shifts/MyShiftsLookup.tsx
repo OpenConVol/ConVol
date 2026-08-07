@@ -85,12 +85,12 @@ export default function MyShiftsLookup() {
           onChange={e => setEmail(e.target.value)}
           required
           placeholder="your@email.com"
-          className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+          className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-[var(--app-text)] placeholder-gray-500 focus:outline-none focus:border-indigo-500"
         />
         <button
           type="submit"
           disabled={loading}
-          className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
+          className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-[var(--app-brand-ink)] font-medium px-6 py-3 rounded-lg transition-colors"
         >
           {loading ? 'Looking up...' : 'Look up'}
         </button>
@@ -102,7 +102,7 @@ export default function MyShiftsLookup() {
         <div>
           <div className="flex justify-between items-center mb-6">
             <div>
-              <div className="text-2xl font-bold text-white">{name}</div>
+              <div className="text-2xl font-bold text-[var(--app-text)]">{name}</div>
               <div className="text-gray-400 text-sm">{shifts.length} shift{shifts.length !== 1 ? 's' : ''} signed up</div>
               {mySched.length > 0 && (
                 <div className="text-purple-400 text-sm">{mySched.length} panels on your Sched schedule</div>
@@ -114,7 +114,7 @@ export default function MyShiftsLookup() {
             </div>
           </div>
 
-          <a href={`/api/ical?email=${encodeURIComponent(email)}`} className="inline-block bg-gray-800 hover:bg-gray-700 text-white text-sm px-4 py-2 rounded-lg mb-8 transition-colors">Download calendar (.ics)</a>
+          <a href={`/api/ical?email=${encodeURIComponent(email)}`} className="inline-block bg-gray-800 hover:bg-gray-700 text-[var(--app-text)] text-sm px-4 py-2 rounded-lg mb-8 transition-colors">Download calendar (.ics)</a>
 
           {shifts.length === 0 ? (
             <div className="bg-gray-900 rounded-xl p-8 text-center text-gray-500">
@@ -129,7 +129,7 @@ export default function MyShiftsLookup() {
                   <div key={shift.id} className={`rounded-xl p-6 border ${shift.checked_in ? 'bg-green-900 border-green-700' : 'bg-gray-900 border-gray-800'}`}>
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <div className="font-bold text-white text-lg">{shift.shift_types?.name}</div>
+                        <div className="font-bold text-[var(--app-text)] text-lg">{shift.shift_types?.name}</div>
                         <div className="text-indigo-400 text-sm mt-1">{shift.locations?.name}</div>
                         <div className="text-gray-500 text-sm mt-1">{shift.departments?.name}</div>
                         <div className="text-gray-500 text-sm mt-2">

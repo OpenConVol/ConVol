@@ -80,7 +80,7 @@ export default async function DashboardPage() {
       <div className={`rounded-xl p-5 ${statusColor[shift.status as keyof typeof statusColor]}`}>
         <div className="flex justify-between items-start">
           <div>
-            <div className={`font-bold ${isPast ? 'text-gray-400' : 'text-white'}`}>
+            <div className={`font-bold ${isPast ? 'text-gray-400' : 'text-[var(--app-text)]'}`}>
               {shift.shift_types?.name}
             </div>
             <div className="text-gray-500 text-sm mt-1">
@@ -134,13 +134,13 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-gray-950 text-[var(--app-text)]">
       <div className="max-w-4xl mx-auto px-6 py-16">
 
         <div className="mb-10">
           <a href="/" className="text-indigo-400 text-sm mb-1 block">← Home</a>
           <a href="/admin" className="text-indigo-400 text-sm mb-4 block">← Admin</a>
-          <h1 className="text-4xl font-bold text-white mb-2">Dashboard</h1>
+          <h1 className="text-4xl font-bold text-[var(--app-text)] mb-2">Dashboard</h1>
           <p className="text-gray-400">Real-time shift fill rates and check-in status</p>
         </div>
 

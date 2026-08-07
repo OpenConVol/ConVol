@@ -14,7 +14,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
   )
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white flex items-center justify-center px-6">
+    <main className="min-h-screen bg-gray-950 text-[var(--app-text)] flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         {!invite ? (
           <div className="text-center">
@@ -31,7 +31,7 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
           <>
             <h1 className="text-3xl font-bold mb-2">Set up your account</h1>
             <p className="text-gray-400 text-sm mb-8">
-              Create a password for <span className="text-white">{invite.email}</span>.
+              Create a password for <span className="text-[var(--app-text)]">{invite.email}</span>.
             </p>
             <AcceptInviteForm token={token} email={invite.email} />
           </>

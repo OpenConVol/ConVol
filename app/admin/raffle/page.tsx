@@ -44,7 +44,7 @@ export default async function RafflePage() {
   }))
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-gray-950 text-[var(--app-text)]">
       <div className="max-w-4xl mx-auto px-6 py-16">
 
         <div className="mb-10">
@@ -55,13 +55,13 @@ export default async function RafflePage() {
         {/* Summary */}
         <div className="grid grid-cols-3 gap-4 mb-12">
           <div className="bg-gray-900 rounded-xl p-6">
-            <div className="text-3xl font-bold text-white mb-1">
+            <div className="text-3xl font-bold text-[var(--app-text)] mb-1">
               {tickets.length}
             </div>
             <div className="text-gray-400 text-sm">Total tickets awarded</div>
           </div>
           <div className="bg-gray-900 rounded-xl p-6">
-            <div className="text-3xl font-bold text-white mb-1">
+            <div className="text-3xl font-bold text-[var(--app-text)] mb-1">
               {volunteersWithData.filter(v => v.ticketCount > 0).length}
             </div>
             <div className="text-gray-400 text-sm">Volunteers with tickets</div>

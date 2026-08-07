@@ -39,7 +39,7 @@ export default function LoginForm() {
         required
         autoFocus
         placeholder="you@example.com"
-        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-[var(--app-text)] placeholder-gray-500 focus:outline-none focus:border-indigo-500"
       />
       <input
         type="password"
@@ -47,13 +47,13 @@ export default function LoginForm() {
         onChange={e => setPassword(e.target.value)}
         required
         placeholder="Password"
-        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-[var(--app-text)] placeholder-gray-500 focus:outline-none focus:border-indigo-500"
       />
       {error && <div className="text-red-400 text-sm">{error}</div>}
       <button
         type="submit"
         disabled={loading}
-        className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-medium px-6 py-3 rounded-lg transition-colors"
+        className="w-full bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-[var(--app-brand-ink)] font-medium px-6 py-3 rounded-lg transition-colors"
       >
         {loading ? 'Signing in…' : 'Sign in'}
       </button>

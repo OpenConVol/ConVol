@@ -23,11 +23,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
       <div className="bg-gray-900 border-b border-gray-800">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between gap-4">
           <nav className="flex items-center gap-4 text-sm">
-            <a href="/admin" className="text-gray-300 hover:text-white transition-colors">Admin</a>
-            <a href="/admin/dashboard" className="text-gray-300 hover:text-white transition-colors">Dashboard</a>
-            <a href="/admin/checkin" className="text-gray-300 hover:text-white transition-colors">Check-in</a>
-            <a href="/admin/raffle" className="text-gray-300 hover:text-white transition-colors">Raffle</a>
-            <a href="/admin/staff" className="text-gray-300 hover:text-white transition-colors">Staff</a>
+            <a href="/admin" className="text-gray-300 hover:text-[var(--app-text)] transition-colors">Admin</a>
+            <a href="/admin/dashboard" className="text-gray-300 hover:text-[var(--app-text)] transition-colors">Dashboard</a>
+            <a href="/admin/checkin" className="text-gray-300 hover:text-[var(--app-text)] transition-colors">Check-in</a>
+            <a href="/admin/raffle" className="text-gray-300 hover:text-[var(--app-text)] transition-colors">Raffle</a>
+            <a href="/admin/staff" className="text-gray-300 hover:text-[var(--app-text)] transition-colors">Staff</a>
+            <a href="/admin/appearance" className="text-gray-300 hover:text-[var(--app-text)] transition-colors">Appearance</a>
           </nav>
           <div className="flex items-center gap-4 shrink-0">
             <span className="text-gray-500 text-sm hidden sm:inline">{staff.email}</span>

@@ -11,7 +11,7 @@ export default async function SetupPage() {
   const rootEmail = process.env.CONVOL_ROOT_ADMIN_EMAIL?.trim().toLowerCase() ?? ''
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white flex items-center justify-center px-6">
+    <main className="min-h-screen bg-gray-950 text-[var(--app-text)] flex items-center justify-center px-6">
       <div className="w-full max-w-sm">
         <h1 className="text-3xl font-bold mb-2">Set up ConVol</h1>
         <p className="text-gray-400 text-sm mb-8">

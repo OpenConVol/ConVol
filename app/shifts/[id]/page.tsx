@@ -32,7 +32,7 @@ export default async function ShiftPage({
 
   if (!shift) {
     return (
-      <main className="min-h-screen bg-gray-950 text-white flex items-center 
+      <main className="min-h-screen bg-gray-950 text-[var(--app-text)] flex items-center 
         justify-center">
         <div className="text-gray-400">Shift not found</div>
       </main>
@@ -42,7 +42,7 @@ export default async function ShiftPage({
   const spotsLeft = shift.volunteers_needed - (signups?.length ?? 0)
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-gray-950 text-[var(--app-text)]">
       <div className="max-w-2xl mx-auto px-6 py-16">
 
         <a href="/shifts" className="text-indigo-400 text-sm mb-8 block">
