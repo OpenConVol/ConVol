@@ -354,6 +354,19 @@ decided here:
   still document env-based setup for headless/self-host operators who never open
   the UI. Not built yet; this note is the spec starting point.
 
+- **Convention branding / theming via key colors.** Part of the same settings
+  surface. Not a binary light/dark toggle and not hand-edited CSS — instead a
+  small set of operator-chosen "key colors" (primary/brand, accent,
+  background, surface, text, border) that reskin the whole app. A con pastes or
+  picks a handful of values and ConVol takes on their look (e.g. matching
+  jordancon.org: teal `#198cae` primary, `#46c8c8` accent, white background,
+  `#474747` text). Implementation requires ConVol to stop hardcoding Tailwind
+  color classes (`bg-gray-950`, `text-indigo-400`, …) and drive color from CSS
+  custom properties fed by the settings, so a theme change is data, not a code
+  change. Ships alongside a couple of sensible presets (the current dark/indigo
+  default, plus a light default) so most cons never touch individual colors.
+  Not built yet.
+
 ---
 
 ## Implementation Order (Suggested)
