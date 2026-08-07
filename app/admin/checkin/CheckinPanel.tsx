@@ -76,7 +76,7 @@ export default function CheckinPanel({ shifts }: { shifts: Shift[] }) {
           value={selectedShift}
           onChange={e => loadShift(e.target.value)}
           className="w-full bg-gray-900 border border-gray-700 rounded-lg 
-            px-4 py-3 text-white focus:outline-none focus:border-indigo-500"
+            px-4 py-3 text-[var(--app-text)] focus:outline-none focus:border-indigo-500"
         >
           <option value="">Choose a shift...</option>
           {shifts.map(s => (
@@ -101,7 +101,7 @@ export default function CheckinPanel({ shifts }: { shifts: Shift[] }) {
               <div className="text-indigo-400 text-sm">{shift.locations?.name}</div>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-white">
+              <div className="text-2xl font-bold text-[var(--app-text)]">
                 {checkins.length} / {signups.length}
               </div>
               <div className="text-gray-500 text-xs">checked in</div>
@@ -133,7 +133,7 @@ export default function CheckinPanel({ shifts }: { shifts: Shift[] }) {
                   ? 'bg-green-900 border border-green-700' 
                   : 'bg-gray-900'}`}>
               <div>
-                <div className="font-medium text-white">
+                <div className="font-medium text-[var(--app-text)]">
                   {signup.volunteers?.name}
                 </div>
                 <div className="text-sm text-gray-400">
@@ -155,7 +155,7 @@ export default function CheckinPanel({ shifts }: { shifts: Shift[] }) {
               ) : (
                 <button
                   onClick={() => checkIn(signup.volunteer_id)}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white 
+                  className="bg-indigo-600 hover:bg-indigo-500 text-[var(--app-brand-ink)] 
                     text-sm px-4 py-2 rounded-lg transition-colors"
                 >
                   Check in

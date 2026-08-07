@@ -39,12 +39,12 @@ export default function RaffleLookup() {
           required
           autoFocus
           placeholder="your@email.com"
-          className="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-5 py-4 text-white text-lg placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+          className="flex-1 bg-gray-900 border border-gray-700 rounded-xl px-5 py-4 text-[var(--app-text)] text-lg placeholder-gray-500 focus:outline-none focus:border-indigo-500"
         />
         <button
           type="submit"
           disabled={loading}
-          className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-medium px-6 rounded-xl transition-colors"
+          className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-[var(--app-brand-ink)] font-medium px-6 rounded-xl transition-colors"
         >
           {loading ? '…' : 'Look up'}
         </button>

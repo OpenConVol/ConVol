@@ -26,7 +26,7 @@ export default async function CheckinPage() {
   `)
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-gray-950 text-[var(--app-text)]">
       <div className="max-w-4xl mx-auto px-6 py-16">
 
         <div className="mb-10">

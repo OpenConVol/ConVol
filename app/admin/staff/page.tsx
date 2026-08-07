@@ -29,11 +29,11 @@ export default async function StaffPage() {
   )
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-gray-950 text-[var(--app-text)]">
       <div className="max-w-3xl mx-auto px-6 py-16">
         <div className="mb-10">
           <a href="/admin" className="text-indigo-400 text-sm mb-4 block">← Admin</a>
-          <h1 className="text-4xl font-bold text-white mb-2">Staff</h1>
+          <h1 className="text-4xl font-bold text-[var(--app-text)] mb-2">Staff</h1>
           <p className="text-gray-400">Invite coordinators and manage who can sign in.</p>
         </div>
         <StaffManager

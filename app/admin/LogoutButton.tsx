@@ -15,7 +15,7 @@ export default function LogoutButton() {
     <button
       onClick={logout}
       disabled={loading}
-      className="text-gray-400 hover:text-white text-sm transition-colors"
+      className="text-gray-400 hover:text-[var(--app-text)] text-sm transition-colors"
     >
       {loading ? 'Signing out…' : 'Sign out'}
     </button>

@@ -20,7 +20,7 @@ export default async function AdminPage() {
   const signups = await queryMany('SELECT * FROM signups')
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-gray-950 text-[var(--app-text)]">
       <div className="max-w-5xl mx-auto px-6 py-16">
 
         {/* Header */}
@@ -28,32 +28,32 @@ export default async function AdminPage() {
           <a href="/" className="text-indigo-400 text-sm mb-4 block">
             ← Back
           </a>
-          <h1 className="text-4xl font-bold text-white mb-2">Admin</h1>
+          <h1 className="text-4xl font-bold text-[var(--app-text)] mb-2">Admin</h1>
           <p className="text-gray-400">Manage shifts, volunteers, and check-ins</p>
         </div>
 
         {/* Stats */}
         <div className="grid grid-cols-4 gap-4 mb-12">
           <div className="bg-gray-900 rounded-xl p-6">
-            <div className="text-3xl font-bold text-white mb-1">
+            <div className="text-3xl font-bold text-[var(--app-text)] mb-1">
               {shifts?.length ?? 0}
             </div>
             <div className="text-gray-400 text-sm">Shifts</div>
           </div>
           <div className="bg-gray-900 rounded-xl p-6">
-            <div className="text-3xl font-bold text-white mb-1">
+            <div className="text-3xl font-bold text-[var(--app-text)] mb-1">
               {volunteers?.length ?? 0}
             </div>
             <div className="text-gray-400 text-sm">Volunteers</div>
           </div>
           <div className="bg-gray-900 rounded-xl p-6">
-            <div className="text-3xl font-bold text-white mb-1">
+            <div className="text-3xl font-bold text-[var(--app-text)] mb-1">
               {signups?.length ?? 0}
             </div>
             <div className="text-gray-400 text-sm">Sign-ups</div>
           </div>
           <div className="bg-gray-900 rounded-xl p-6">
-            <div className="text-3xl font-bold text-white mb-1">
+            <div className="text-3xl font-bold text-[var(--app-text)] mb-1">
               {checkins?.length ?? 0}
             </div>
             <div className="text-gray-400 text-sm">Check-ins</div>
@@ -101,7 +101,7 @@ export default async function AdminPage() {
                   {shifts.map((shift) => (
                     <tr key={shift.id} className="border-b border-gray-800 
                       hover:bg-gray-800 transition-colors">
-                      <td className="p-4 text-white">
+                      <td className="p-4 text-[var(--app-text)]">
                         {shift.shift_types?.name}
                       </td>
                       <td className="p-4 text-indigo-400">
@@ -145,7 +145,7 @@ export default async function AdminPage() {
                   {volunteers.map((volunteer) => (
                     <tr key={volunteer.id} className="border-b border-gray-800 
                       hover:bg-gray-800 transition-colors">
-                      <td className="p-4 text-white">{volunteer.name}</td>
+                      <td className="p-4 text-[var(--app-text)]">{volunteer.name}</td>
                       <td className="p-4 text-gray-400">{volunteer.email}</td>
                       <td className="p-4 text-gray-400 text-sm">
                         {new Date(volunteer.created_at).toLocaleDateString()}

@@ -52,7 +52,7 @@ export default function RafflePanel({ volunteers }: { volunteers: Volunteer[] })
         value={search}
         onChange={e => setSearch(e.target.value)}
         placeholder="Search volunteers..."
-        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500 mb-6"
+        className="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-[var(--app-text)] placeholder-gray-500 focus:outline-none focus:border-indigo-500 mb-6"
       />
 
       {filtered.length === 0 && (
@@ -66,7 +66,7 @@ export default function RafflePanel({ volunteers }: { volunteers: Volunteer[] })
           <div key={volunteer.id} className="bg-gray-900 rounded-xl p-6">
             <div className="flex justify-between items-start mb-4">
               <div>
-                <div className="font-bold text-white text-lg">{volunteer.name}</div>
+                <div className="font-bold text-[var(--app-text)] text-lg">{volunteer.name}</div>
                 <div className="text-gray-400 text-sm">{volunteer.email}</div>
               </div>
               <div className="text-right">
@@ -85,7 +85,7 @@ export default function RafflePanel({ volunteers }: { volunteers: Volunteer[] })
                 <button
                   onClick={() => awardAllPending(volunteer)}
                   disabled={loading === volunteer.id}
-                  className="bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-700 text-white text-sm px-4 py-2 rounded-lg transition-colors"
+                  className="bg-yellow-600 hover:bg-yellow-500 disabled:bg-gray-700 text-[var(--app-text)] text-sm px-4 py-2 rounded-lg transition-colors"
                 >
                   {loading === volunteer.id ? 'Awarding...' : 'Award all'}
                 </button>

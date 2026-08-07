@@ -47,7 +47,7 @@ export default function ShiftsList({ shifts }: { shifts: Shift[] }) {
             value={selectedDay}
             onChange={e => setSelectedDay(e.target.value)}
             className="bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 
-              text-white text-sm focus:outline-none focus:border-indigo-500"
+              text-[var(--app-text)] text-sm focus:outline-none focus:border-indigo-500"
           >
             <option value="all">All days</option>
             {days.map(day => (
@@ -65,7 +65,7 @@ export default function ShiftsList({ shifts }: { shifts: Shift[] }) {
             value={selectedDept}
             onChange={e => setSelectedDept(e.target.value)}
             className="bg-gray-900 border border-gray-700 rounded-lg px-3 py-2 
-              text-white text-sm focus:outline-none focus:border-indigo-500"
+              text-[var(--app-text)] text-sm focus:outline-none focus:border-indigo-500"
           >
             <option value="all">All departments</option>
             {departments.map(dept => (
@@ -114,7 +114,7 @@ export default function ShiftsList({ shifts }: { shifts: Shift[] }) {
                   </div>
                   <a href={`/shifts/${shift.id}`}
                     className="bg-indigo-600 hover:bg-indigo-500 
-                    text-white text-sm px-4 py-2 rounded-lg transition-colors 
+                    text-[var(--app-text)] text-sm px-4 py-2 rounded-lg transition-colors 
                     inline-block">
                     View & Sign up
                   </a>

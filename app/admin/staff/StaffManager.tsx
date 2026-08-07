@@ -100,7 +100,7 @@ export default function StaffManager({
     <div className="space-y-12">
       {/* Invite */}
       <section>
-        <h2 className="text-lg font-bold text-white mb-4">Invite a coordinator</h2>
+        <h2 className="text-lg font-bold text-[var(--app-text)] mb-4">Invite a coordinator</h2>
         <form onSubmit={createInvite} className="flex gap-3">
           <input
             type="email"
@@ -108,12 +108,12 @@ export default function StaffManager({
             onChange={e => setEmail(e.target.value)}
             required
             placeholder="coordinator@example.com"
-            className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-indigo-500"
+            className="flex-1 bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-[var(--app-text)] placeholder-gray-500 focus:outline-none focus:border-indigo-500"
           />
           <button
             type="submit"
             disabled={busy}
-            className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-white font-medium px-6 rounded-lg transition-colors"
+            className="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-700 text-[var(--app-brand-ink)] font-medium px-6 rounded-lg transition-colors"
           >
             {busy ? 'Creating…' : 'Create invite'}
           </button>
@@ -131,7 +131,7 @@ export default function StaffManager({
               </code>
               <button
                 onClick={copyLink}
-                className="shrink-0 bg-gray-800 hover:bg-gray-700 text-white text-sm px-4 py-2 rounded-lg transition-colors"
+                className="shrink-0 bg-gray-800 hover:bg-gray-700 text-[var(--app-text)] text-sm px-4 py-2 rounded-lg transition-colors"
               >
                 {copied ? 'Copied' : 'Copy'}
               </button>
@@ -146,7 +146,7 @@ export default function StaffManager({
       {/* Pending invites */}
       {initialInvites.length > 0 && (
         <section>
-          <h2 className="text-lg font-bold text-white mb-4">Pending invites</h2>
+          <h2 className="text-lg font-bold text-[var(--app-text)] mb-4">Pending invites</h2>
           <div className="bg-gray-900 rounded-xl overflow-hidden">
             {initialInvites.map(inv => (
               <div
@@ -154,7 +154,7 @@ export default function StaffManager({
                 className="flex items-center justify-between px-5 py-4 border-b border-gray-800 last:border-0"
               >
                 <div>
-                  <div className="text-white">{inv.email}</div>
+                  <div className="text-[var(--app-text)]">{inv.email}</div>
                   <div className="text-gray-500 text-xs">
                     invited {fmt(inv.created_at)} · expires {fmt(inv.expires_at)}
                   </div>
@@ -173,7 +173,7 @@ export default function StaffManager({
 
       {/* Current staff */}
       <section>
-        <h2 className="text-lg font-bold text-white mb-4">Staff accounts</h2>
+        <h2 className="text-lg font-bold text-[var(--app-text)] mb-4">Staff accounts</h2>
         <div className="bg-gray-900 rounded-xl overflow-hidden">
           {initialStaff.map(s => (
             <div
@@ -181,7 +181,7 @@ export default function StaffManager({
               className="flex items-center justify-between px-5 py-4 border-b border-gray-800 last:border-0"
             >
               <div>
-                <div className="text-white">
+                <div className="text-[var(--app-text)]">
                   {s.email}
                   {s.id === currentStaffId && (
                     <span className="text-indigo-400 text-xs ml-2">(you)</span>

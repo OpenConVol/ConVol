@@ -55,14 +55,14 @@ export default async function SchedulePage() {
   })
 
   return (
-    <main className="min-h-screen bg-gray-950 text-white">
+    <main className="min-h-screen bg-gray-950 text-[var(--app-text)]">
       <div className="max-w-4xl mx-auto px-6 py-16">
 
         <div className="mb-10">
           <a href="/" className="text-indigo-400 text-sm mb-4 block">
             ← Back
           </a>
-          <h1 className="text-4xl font-bold text-white mb-2">Full Schedule</h1>
+          <h1 className="text-4xl font-bold text-[var(--app-text)] mb-2">Full Schedule</h1>
           <p className="text-gray-400">Volunteer shifts and programming in one view</p>
         </div>
 
@@ -81,7 +81,7 @@ export default async function SchedulePage() {
         {/* Days */}
         {Object.entries(days).map(([day, events]) => (
           <div key={day} className="mb-12">
-            <h2 className="text-xl font-bold text-white mb-4 pb-2 border-b border-gray-800">
+            <h2 className="text-xl font-bold text-[var(--app-text)] mb-4 pb-2 border-b border-gray-800">
               {day}
             </h2>
             <div className="space-y-3">
@@ -104,7 +104,7 @@ export default async function SchedulePage() {
                           {event.type === 'shift' ? `Volunteer — ${event.department}` : event.department}
                         </span>
                       </div>
-                      <div className="font-bold text-white text-lg">{event.title}</div>
+                      <div className="font-bold text-[var(--app-text)] text-lg">{event.title}</div>
                       {event.location && (
                         <div className="text-gray-400 text-sm mt-1">{event.location}</div>
                       )}
@@ -126,7 +126,7 @@ export default async function SchedulePage() {
                       </div>
                       {event.type === 'shift' && event.url && (
                         <a href={event.url}
-                          className="mt-2 inline-block bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-3 py-1 rounded-lg transition-colors">
+                          className="mt-2 inline-block bg-indigo-600 hover:bg-indigo-500 text-[var(--app-brand-ink)] text-xs px-3 py-1 rounded-lg transition-colors">
                           Sign up
                         </a>
                       )}
