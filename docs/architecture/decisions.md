@@ -38,6 +38,25 @@ repo `docker-compose.yml` migrate service now uses the same psql runner
 
 ---
 
+## Update — 2026-08-07: Staff management (super-admin UI)
+
+Realizes the "staff are added and removed through a super-admin UI" half of
+Decision 1. `/admin/staff` lets an existing staff member invite coordinators,
+see pending invites, and remove accounts.
+
+- **Invite-by-link, no email/SMTP:** creating an invite (migration
+  `003_staff_invites.sql`) returns a one-time `/invite/<token>` link the admin
+  hands off out of band (Discord, etc.). The invitee sets their own password,
+  which creates their `staff` row and signs them in. Only the SHA-256 hash of
+  the token is stored; tokens expire in 7 days and are single-use.
+- **Lockout guards:** you cannot remove your own account or the last remaining
+  staff account.
+- Roles are still a single `staff` tier; the UI does not yet expose role
+  selection because nothing enforces role differences yet. When authorization
+  by role lands, the invite/create paths grow a role picker.
+
+---
+
 ## Context
 
 ConVol was scaffolded in April 2026 following a Vercel + Next.js + Supabase
