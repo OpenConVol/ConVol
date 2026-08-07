@@ -325,6 +325,35 @@ decided here:
 - **Ribbon-at-3-hours and PIN reward.** Acknowledged as a future feature;
   not designed here.
 
+- **Operator onboarding / post-install setup surface.** After the first admin
+  logs in (via `/setup`), there is currently no in-app place that tells them
+  what still needs configuring or lets them do it — they have to know to edit
+  env vars and redeploy. Planned: a "Setup" / "Settings" area under `/admin`
+  that (a) shows a checklist of integrations and their state — e.g. "Sched: not
+  connected", with a link to instructions — degrading gracefully for anything
+  not yet configured (as the code already does), and (b) lets an admin fill in
+  or change operator config over time, since some values don't exist at install
+  (a con may not have their Sched API key until later) and others change.
+
+  The design fork to resolve first is **where that config lives**:
+
+  1. **Env vars only (status + docs).** Keep all integration config in env
+     (as today: `SCHED_URL`, `SCHED_TOKEN`, `SESSION_SECRET`), document it in
+     the Docker README, and make the in-app surface *read-only* — it detects
+     what's set and links to setup docs, but changes still mean editing env and
+     restarting. Simplest; no secrets in the database.
+  2. **DB-backed settings table (editable in-app).** A `settings` table read
+     through with env fallback, so an admin can paste their Sched key in the UI
+     with no redeploy. More usable and the better product story, but it puts
+     integration secrets in the database (and thus in DB backups) and needs a
+     clear precedence rule vs. env.
+
+  Current lean: keep true security secrets (`SESSION_SECRET`) env-only, and use
+  a DB-backed settings table for operator integration config like the Sched
+  keys, with an in-app checklist as the entry point. The Docker README should
+  still document env-based setup for headless/self-host operators who never open
+  the UI. Not built yet; this note is the spec starting point.
+
 ---
 
 ## Implementation Order (Suggested)
