@@ -19,10 +19,10 @@ export type DashShift = {
 }
 
 const statusColor: Record<Status, string> = {
-  critical: 'bg-red-900 border border-red-700',
-  warning: 'bg-yellow-900 border border-yellow-700',
-  good: 'bg-gray-900',
-  active: 'bg-indigo-900 border border-indigo-700',
+  critical: 'bg-gray-900 border border-gray-800 border-l-4 border-l-red-500',
+  warning: 'bg-gray-900 border border-gray-800 border-l-4 border-l-yellow-500',
+  good: 'bg-gray-900 border border-gray-800 border-l-4 border-l-green-500',
+  active: 'bg-gray-900 border border-gray-800 border-l-4 border-l-indigo-500',
   past: 'bg-gray-900 border border-gray-800 opacity-60',
 }
 const statusLabel: Record<Status, string> = {
@@ -42,7 +42,7 @@ function ShiftCard({ shift }: { shift: DashShift }) {
           <div className={`font-bold ${isPast ? 'text-gray-400' : 'text-[var(--app-text)]'}`}>
             {shift.shift_types?.name}
           </div>
-          <div className="text-gray-500 text-sm mt-1">
+          <div className="text-gray-600 text-sm mt-1">
             {shift.locations?.name} · {shift.departments?.name}
           </div>
           <div className="text-gray-600 text-xs mt-1">
