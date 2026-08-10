@@ -9,7 +9,7 @@ const RESET_TTL_MINUTES = 60
  * Start a password reset. Public. Always responds { ok: true } regardless of
  * whether the email matches a staff account, so it can't be used to discover
  * which addresses have logins. When it does match, we store a hashed one-time
- * token and email the reset link (via Resend; logs to console if unconfigured).
+ * token and email the reset link (via Brevo; logs to console if unconfigured).
  */
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => ({}))
