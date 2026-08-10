@@ -15,7 +15,10 @@ export default async function LoginPage() {
         <h1 className="text-3xl font-bold mb-2">Staff sign in</h1>
         <p className="text-gray-400 text-sm mb-8">ConVol admin access.</p>
         <LoginForm />
-        <a href="/" className="text-gray-500 hover:text-[var(--app-text)] text-sm mt-8 block">
+        <a href="/forgot" className="text-indigo-400 hover:underline text-sm mt-5 block">
+          Forgot your password?
+        </a>
+        <a href="/" className="text-gray-500 hover:text-[var(--app-text)] text-sm mt-4 block">
           ← Back to ConVol
         </a>
       </div>
