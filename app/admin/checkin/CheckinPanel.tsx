@@ -128,10 +128,8 @@ export default function CheckinPanel({ shifts }: { shifts: Shift[] }) {
           </div>
           {signups.map(signup => (
             <div key={signup.id}
-              className={`rounded-xl p-5 flex justify-between items-center
-                ${isCheckedIn(signup.volunteer_id) 
-                  ? 'bg-green-900 border border-green-700' 
-                  : 'bg-gray-900'}`}>
+              className={`rounded-xl p-5 flex justify-between items-center bg-gray-900 border border-gray-800
+                ${isCheckedIn(signup.volunteer_id) ? 'border-l-4 border-l-green-500' : ''}`}>
               <div>
                 <div className="font-medium text-[var(--app-text)]">
                   {signup.volunteers?.name}
