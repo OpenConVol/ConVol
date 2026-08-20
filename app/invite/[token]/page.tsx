@@ -13,7 +13,9 @@ export default async function InvitePage({ params }: { params: Promise<{ token: 
   // pre-fetch links to scan them, so a view can be a scanner, not a human.
   const invite = await queryOne<{ email: string }>(
     `UPDATE staff_invites
-       SET viewed_at = COALESCE(viewed_at, now()), view_count = view_count + 1
+       SET viewed_at = COALESCE(viewed_at, now()),
+           last_viewed_at = now(),
+           view_count = view_count + 1
      WHERE token_hash = $1 AND accepted_at IS NULL AND expires_at > now()
      RETURNING email`,
     [hashInviteToken(token)]
