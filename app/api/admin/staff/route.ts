@@ -1,13 +1,13 @@
-import { pool, queryOne } from '@/src/lib/db'
-import { generateInviteToken, getSessionStaff } from '@/src/lib/auth'
+import { queryOne } from '@/src/lib/db'
+import { getSessionStaff } from '@/src/lib/auth'
+import { createInvite } from '@/src/lib/invite'
 import { NextRequest, NextResponse } from 'next/server'
 
-const INVITE_TTL_DAYS = 7
-
 /**
- * Create a staff invite. Returns a one-time token the caller turns into a link
- * (`/invite/<token>`). The token is shown only in this response — only its hash
- * is stored — so it cannot be retrieved again later; revoke and re-create if
+ * Create a staff invite. Emails the link to the invitee (Reply-To the inviting
+ * staff member) and also returns the one-time token so the admin UI can show a
+ * copyable link as a fallback. Only the token hash is stored, so the link can't
+ * be retrieved later; revoke and re-create (or have them request a new one) if
  * it's lost.
  */
 export async function POST(request: NextRequest) {
@@ -31,16 +31,16 @@ export async function POST(request: NextRequest) {
     )
   }
 
-  const { token, tokenHash } = generateInviteToken()
-  const { rows } = await pool.query<{ id: string; expires_at: string }>(
-    `INSERT INTO staff_invites (email, token_hash, role, created_by, expires_at)
-     VALUES ($1, $2, 'staff', $3, now() + ($4 || ' days')::interval)
-     RETURNING id, expires_at`,
-    [email, tokenHash, staff.email, String(INVITE_TTL_DAYS)]
-  )
+  const invite = await createInvite({
+    email,
+    createdBy: staff.email,
+    origin: request.nextUrl.origin,
+    replyTo: staff.email,
+    sendMail: true,
+  })
 
   return NextResponse.json(
-    { id: rows[0].id, email, token, expiresAt: rows[0].expires_at },
+    { id: invite.id, email, token: invite.token, expiresAt: invite.expiresAt, emailed: true },
     { status: 201 }
   )
 }

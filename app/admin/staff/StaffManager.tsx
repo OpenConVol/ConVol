@@ -10,7 +10,14 @@ type Staff = {
   created_at: string
   last_login_at: string | null
 }
-type Invite = { id: string; email: string; created_at: string; expires_at: string }
+type Invite = {
+  id: string
+  email: string
+  created_at: string
+  expires_at: string
+  viewed_at: string | null
+  view_count: number
+}
 
 function fmt(ts: string | null): string {
   if (!ts) return '—'
@@ -137,7 +144,7 @@ export default function StaffManager({
               </button>
             </div>
             <div className="text-gray-500 text-xs mt-2">
-              Send it to them however you like. They set their own password; the link expires in 7 days.
+              Emailed to them automatically. Here&apos;s the link too, in case you want to send it another way. They set their own password; it expires in 7 days.
             </div>
           </div>
         )}
@@ -157,6 +164,16 @@ export default function StaffManager({
                   <div className="text-[var(--app-text)]">{inv.email}</div>
                   <div className="text-gray-500 text-xs">
                     invited {fmt(inv.created_at)} · expires {fmt(inv.expires_at)}
+                  </div>
+                  <div className="text-xs mt-0.5">
+                    {inv.viewed_at ? (
+                      <span className="text-green-400">
+                        opened {fmt(inv.viewed_at)}
+                        {inv.view_count > 1 ? ` (${inv.view_count}x)` : ''}
+                      </span>
+                    ) : (
+                      <span className="text-gray-600">not opened yet</span>
+                    )}
                   </div>
                 </div>
                 <button

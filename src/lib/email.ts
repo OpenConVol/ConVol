@@ -13,7 +13,14 @@ import 'server-only'
  *   EMAIL_FROM=ConVol <noreply@yourdomain>   (sender must be verified in Brevo)
  */
 
-export type EmailMessage = { to: string; subject: string; html: string; text?: string }
+export type EmailMessage = {
+  to: string
+  subject: string
+  html: string
+  text?: string
+  /** Optional Reply-To so replies reach a real person, not the noreply sender. */
+  replyTo?: string
+}
 
 export function isEmailConfigured(): boolean {
   return Boolean(process.env.BREVO_API_KEY && process.env.EMAIL_FROM)
@@ -51,6 +58,7 @@ export async function sendEmail(msg: EmailMessage): Promise<void> {
         subject: msg.subject,
         htmlContent: msg.html,
         ...(msg.text ? { textContent: msg.text } : {}),
+        ...(msg.replyTo ? { replyTo: { email: msg.replyTo } } : {}),
       }),
     })
     if (!res.ok) {
