@@ -16,6 +16,7 @@ type Invite = {
   created_at: string
   expires_at: string
   viewed_at: string | null
+  last_viewed_at: string | null
   view_count: number
 }
 
@@ -169,7 +170,7 @@ export default function StaffManager({
                     {inv.viewed_at ? (
                       <span className="text-green-400">
                         opened {fmt(inv.viewed_at)}
-                        {inv.view_count > 1 ? ` (${inv.view_count}x)` : ''}
+                        {inv.view_count > 1 ? `, last ${fmt(inv.last_viewed_at)} (${inv.view_count}x)` : ''}
                       </span>
                     ) : (
                       <span className="text-gray-600">not opened yet</span>

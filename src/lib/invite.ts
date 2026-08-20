@@ -9,13 +9,13 @@ export const INVITE_TTL_DAYS = 7
 function inviteContent(link: string, replyTo?: string) {
   const contact = replyTo ? `\n\nQuestions? Just reply to this email (${replyTo}).` : ''
   return {
-    subject: 'Your ConVol invitation (JordanCon volunteer system)',
+    subject: 'You are invited to admin ConVol (JordanCon volunteer system)',
     text:
-      `You've been invited to ConVol, an open-source volunteer management system built for JordanCon.\n\n` +
+      `You've been invited to be an admin on ConVol, an open-source volunteer management system built for JordanCon.\n\n` +
       `Set up your account and take a look: ${link}\n\n` +
       `This link is just for you and expires in ${INVITE_TTL_DAYS} days.${contact}`,
     html:
-      `<p>You've been invited to <strong>ConVol</strong>, an open-source volunteer management system built for JordanCon.</p>` +
+      `<p>You've been invited to be an <strong>admin</strong> on ConVol, an open-source volunteer management system built for JordanCon.</p>` +
       `<p><a href="${link}">Set up your account and take a look</a></p>` +
       `<p style="color:#6b7280;font-size:13px">This link is just for you and expires in ${INVITE_TTL_DAYS} days.</p>` +
       (replyTo

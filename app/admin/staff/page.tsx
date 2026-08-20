@@ -23,9 +23,10 @@ export default async function StaffPage() {
     created_at: string
     expires_at: string
     viewed_at: string | null
+    last_viewed_at: string | null
     view_count: number
   }>(
-    `SELECT id, email, created_at, expires_at, viewed_at, view_count FROM staff_invites
+    `SELECT id, email, created_at, expires_at, viewed_at, last_viewed_at, view_count FROM staff_invites
      WHERE accepted_at IS NULL AND expires_at > now()
      ORDER BY created_at DESC`
   )
